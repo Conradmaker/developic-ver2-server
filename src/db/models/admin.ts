@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class Admin extends Model {
   public readonly id!: string;
@@ -11,7 +12,6 @@ class Admin extends Model {
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
-
 Admin.init(
   {
     email: {
@@ -36,6 +36,7 @@ Admin.init(
   }
 );
 export const associateAdmin = (db: DbType): void => {
-  console.log(db);
+  db.Admin.hasMany(db.FaQ);
+  db.Admin.hasMany(db.Notice);
 };
 export default Admin;

@@ -1,8 +1,9 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class User extends Model {
-  public readonly userId!: string;
+  public readonly id!: string;
   public email!: string;
   public password!: string;
   public name!: string;
@@ -23,12 +24,12 @@ class User extends Model {
 
 User.init(
   {
-    userId: {
+    id: {
       type: DataTypes.STRING(50),
       primaryKey: true,
     },
     email: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(30),
     },
     password: {
       type: DataTypes.STRING(100),
@@ -62,7 +63,7 @@ User.init(
       type: DataTypes.STRING(256),
     },
     avatar: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(128),
     },
     verificationCode: {
       type: DataTypes.STRING(10),
@@ -83,6 +84,22 @@ User.init(
 );
 
 export const associateUser = (db: DbType): void => {
-  console.log(db);
+  db.User.hasMany(db.PhotoBinder);
+  db.User.hasMany(db.PostImage);
+  db.User.hasMany(db.PicStory);
+  db.User.hasMany(db.Comment);
+  db.User.hasMany(db.DeclareComment);
+  db.User.hasMany(db.DeclarePost);
+  db.User.hasMany(db.RecentView);
+  db.User.hasMany(db.Exhibition);
+  db.User.hasMany(db.ExhibitionImage);
+  db.User.hasOne(db.UserIntro);
+  db.User.belongsToMany(db.User, { through: 'SUBSCRIBE', as: 'subscriber' });
+  db.User.belongsToMany(db.User, { through: 'SUBSCRIBE', as: 'writer' });
+  db.User.belongsToMany(db.Post, { through: 'POST_LIKE', as: 'likedPost' });
+  db.User.belongsToMany(db.Comment, {
+    through: 'COMMENT_LIKE',
+    as: 'likedComment',
+  });
 };
 export default User;

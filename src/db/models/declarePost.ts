@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class DeclarePost extends Model {
   public readonly id!: string;
@@ -26,6 +27,7 @@ DeclarePost.init(
   }
 );
 export const associateDeclarePost = (db: DbType): void => {
-  console.log(db);
+  db.DeclarePost.belongsTo(db.User);
+  db.DeclarePost.belongsTo(db.Post);
 };
 export default DeclarePost;

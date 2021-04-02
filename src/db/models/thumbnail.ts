@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class Thumbnail extends Model {
   public readonly id!: string;

@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class DeclareComment extends Model {
   public readonly id!: string;
@@ -26,6 +27,7 @@ DeclareComment.init(
   }
 );
 export const associateDeclareComment = (db: DbType): void => {
-  console.log(db);
+  db.DeclareComment.belongsTo(db.User);
+  db.DeclareComment.belongsTo(db.Comment);
 };
 export default DeclareComment;

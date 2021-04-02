@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class UserIntro extends Model {
   public readonly id!: string;
@@ -16,13 +17,12 @@ UserIntro.init(
   {
     introduction: {
       type: DataTypes.TEXT(),
-      allowNull: false,
     },
     website: {
       type: DataTypes.STRING(40),
     },
     mostlyUseModel: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(128),
     },
   },
   {
@@ -34,6 +34,6 @@ UserIntro.init(
   }
 );
 export const associateUserIntro = (db: DbType): void => {
-  console.log(db);
+  db.UserIntro.belongsTo(db.User);
 };
 export default UserIntro;

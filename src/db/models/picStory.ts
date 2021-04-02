@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class PicStory extends Model {
   public readonly id!: string;
@@ -7,6 +8,7 @@ class PicStory extends Model {
   public title!: string;
   public description!: string;
   public isPrivate!: boolean;
+  public thumbnail?: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -27,6 +29,9 @@ PicStory.init(
       allowNull: false,
       defaultValue: 0,
     },
+    thumbnail: {
+      type: DataTypes.STRING(128),
+    },
   },
   {
     sequelize,
@@ -37,6 +42,7 @@ PicStory.init(
   }
 );
 export const associatePicStory = (db: DbType): void => {
-  console.log(db);
+  db.PicStory.belongsTo(db.User);
+  db.PicStory.belongsToMany(db.Post, { through: 'STORY_POST' });
 };
 export default PicStory;

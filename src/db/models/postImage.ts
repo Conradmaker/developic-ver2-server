@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class PostImage extends Model {
   public readonly id!: string;
@@ -26,6 +27,9 @@ PostImage.init(
   }
 );
 export const associatePostImage = (db: DbType): void => {
-  console.log(db);
+  db.PostImage.belongsTo(db.User);
+  db.PostImage.belongsTo(db.Post);
+  db.PostImage.hasOne(db.MetaData);
+  db.PostImage.belongsToMany(db.PhotoBinder, { through: 'BINDER_IMAGE' });
 };
 export default PostImage;

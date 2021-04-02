@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class HashTag extends Model {
   public readonly id!: string;
@@ -14,7 +15,7 @@ class HashTag extends Model {
 HashTag.init(
   {
     name: {
-      type: DataTypes.STRING(30),
+      type: DataTypes.STRING(50),
       allowNull: false,
     },
     hits: {
@@ -32,6 +33,7 @@ HashTag.init(
   }
 );
 export const associateHashTag = (db: DbType): void => {
-  console.log(db);
+  db.HashTag.hasMany(db.HashTagLog);
+  db.HashTag.belongsToMany(db.Post, { through: 'POST_HASHTAG' });
 };
 export default HashTag;

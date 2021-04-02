@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class HashTagLog extends Model {
   public readonly id!: string;
@@ -33,6 +34,6 @@ HashTagLog.init(
   }
 );
 export const associateHashTagLog = (db: DbType): void => {
-  console.log(db);
+  db.HashTagLog.belongsTo(db.HashTag);
 };
 export default HashTagLog;

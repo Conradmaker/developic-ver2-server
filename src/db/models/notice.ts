@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class Notice extends Model {
   public readonly id!: string;
@@ -14,7 +15,7 @@ class Notice extends Model {
 Notice.init(
   {
     title: {
-      type: DataTypes.STRING(128),
+      type: DataTypes.STRING(256),
       allowNull: false,
     },
     content: {
@@ -31,6 +32,6 @@ Notice.init(
   }
 );
 export const associateNotice = (db: DbType): void => {
-  console.log(db);
+  db.Notice.belongsTo(db.Admin);
 };
 export default Notice;

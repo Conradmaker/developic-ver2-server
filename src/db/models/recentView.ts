@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class RecentView extends Model {
   public readonly id!: string;
@@ -27,6 +28,7 @@ RecentView.init(
   }
 );
 export const associateRecentView = (db: DbType): void => {
-  console.log(db);
+  db.RecentView.belongsTo(db.User);
+  db.RecentView.belongsTo(db.Post);
 };
 export default RecentView;

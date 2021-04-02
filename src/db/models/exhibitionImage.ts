@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class ExhibitionImage extends Model {
   public readonly id!: string;
@@ -26,6 +27,7 @@ ExhibitionImage.init(
   }
 );
 export const associateExhibitionImage = (db: DbType): void => {
-  console.log(db);
+  db.ExhibitionImage.belongsTo(db.Exhibition);
+  db.ExhibitionImage.belongsTo(db.User);
 };
 export default ExhibitionImage;

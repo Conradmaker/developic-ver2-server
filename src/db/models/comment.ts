@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class Comment extends Model {
   public readonly id!: string;
@@ -14,7 +15,7 @@ class Comment extends Model {
 Comment.init(
   {
     content: {
-      type: DataTypes.STRING(30),
+      type: DataTypes.STRING(256),
       allowNull: false,
     },
     mentionedUser: {
@@ -30,6 +31,9 @@ Comment.init(
   }
 );
 export const associateComment = (db: DbType): void => {
-  console.log(db);
+  db.Comment.belongsTo(db.User);
+  db.Comment.belongsTo(db.Post);
+  db.Comment.hasMany(db.DeclareComment);
+  db.Comment.belongsToMany(db.User, { through: 'COMMENT_LIKE', as: 'liker' });
 };
 export default Comment;

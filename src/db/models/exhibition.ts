@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class Exhibition extends Model {
   public readonly id!: string;
@@ -29,26 +30,26 @@ Exhibition.init(
       defaultValue: 0,
     },
     webPage: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(128),
     },
     contact: {
       type: DataTypes.STRING(30),
       allowNull: false,
     },
     email: {
-      type: DataTypes.STRING(30),
-      allowNull: false,
-    },
-    title: {
       type: DataTypes.STRING(50),
       allowNull: false,
     },
-    auth: {
-      type: DataTypes.STRING(30),
+    title: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+    },
+    author: {
+      type: DataTypes.STRING(128),
       allowNull: false,
     },
     address: {
-      type: DataTypes.STRING(30),
+      type: DataTypes.STRING(128),
       allowNull: false,
     },
     description: {
@@ -82,6 +83,7 @@ Exhibition.init(
   }
 );
 export const associateExhibition = (db: DbType): void => {
-  console.log(db);
+  db.Exhibition.belongsTo(db.User);
+  db.Exhibition.hasMany(db.ExhibitionImage);
 };
 export default Exhibition;

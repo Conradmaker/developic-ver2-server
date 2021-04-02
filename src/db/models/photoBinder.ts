@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class PhotoBinder extends Model {
   public readonly id!: string;
@@ -14,7 +15,7 @@ class PhotoBinder extends Model {
 PhotoBinder.init(
   {
     title: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(80),
       allowNull: false,
     },
     description: {
@@ -31,6 +32,7 @@ PhotoBinder.init(
   }
 );
 export const associatePhotoBinder = (db: DbType): void => {
-  console.log(db);
+  db.PhotoBinder.belongsTo(db.User);
+  db.PhotoBinder.belongsToMany(db.PostImage, { through: 'BINDER_IMAGE' });
 };
 export default PhotoBinder;

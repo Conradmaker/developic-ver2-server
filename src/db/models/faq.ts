@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class FaQ extends Model {
   public readonly id!: string;
@@ -14,11 +15,11 @@ class FaQ extends Model {
 FaQ.init(
   {
     question: {
-      type: DataTypes.TEXT(),
+      type: DataTypes.STRING(512),
       allowNull: false,
     },
     answer: {
-      type: DataTypes.TEXT(),
+      type: DataTypes.STRING(1024),
       allowNull: false,
     },
   },
@@ -31,6 +32,6 @@ FaQ.init(
   }
 );
 export const associateFaQ = (db: DbType): void => {
-  console.log(db);
+  db.FaQ.belongsTo(db.Admin);
 };
 export default FaQ;

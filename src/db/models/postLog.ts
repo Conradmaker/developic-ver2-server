@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class PostLog extends Model {
   public readonly id!: string;
@@ -33,6 +34,6 @@ PostLog.init(
   }
 );
 export const associatePostLog = (db: DbType): void => {
-  console.log(db);
+  db.PostLog.belongsTo(db.Post);
 };
 export default PostLog;

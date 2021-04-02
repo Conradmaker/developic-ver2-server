@@ -5,10 +5,16 @@ import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import expressSession from 'express-session';
 import path from 'path';
+import { sequelize } from './db/models';
 
 dotenv.config();
 const prod = process.env.NODE_ENV === 'production';
 const PORT = prod ? process.env.PROD_PORT : process.env.DEV_PORT;
+
+sequelize
+  .sync({ force: false })
+  .then(() => console.log('디비가 연결되었습니다.'))
+  .catch(e => console.error(e));
 
 const app = express();
 

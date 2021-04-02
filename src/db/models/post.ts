@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { DbType, sequelize } from './index';
+import { DbType } from '.';
+import sequelize from './sequelize';
 
 class Post extends Model {
   public readonly id!: string;
@@ -11,6 +12,8 @@ class Post extends Model {
   public summary!: string;
   public isPrimary!: boolean;
   public hits!: number;
+  public thumbnail?: string;
+
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -18,7 +21,7 @@ class Post extends Model {
 Post.init(
   {
     state: { type: DataTypes.TINYINT(), allowNull: false, defaultValue: 0 },
-    title: { type: DataTypes.STRING(128), allowNull: false },
+    title: { type: DataTypes.STRING(256), allowNull: false },
     content: { type: DataTypes.TEXT(), allowNull: false },
     allowComment: {
       type: DataTypes.TINYINT(),
@@ -40,6 +43,9 @@ Post.init(
       defaultValue: 0,
     },
     hits: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+    thumbnail: {
+      type: DataTypes.STRING(128),
+    },
   },
   {
     sequelize,
@@ -50,6 +56,12 @@ Post.init(
   }
 );
 export const associatePost = (db: DbType): void => {
-  console.log(db);
+  db.Post.hasMany(db.PostImage);
+  db.Post.hasMany(db.PostLog);
+  db.Post.hasMany(db.DeclarePost);
+  db.Post.hasMany(db.Comment);
+  db.Post.belongsToMany(db.User, { through: 'LIKE', as: 'liker' });
+  db.Post.belongsToMany(db.HashTag, { through: 'POST_HASHTAG' });
+  db.Post.belongsToMany(db.PicStory, { through: 'STORY_POST' });
 };
 export default Post;
