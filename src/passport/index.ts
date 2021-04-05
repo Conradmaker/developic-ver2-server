@@ -1,6 +1,7 @@
 import passport from 'passport';
 import User from '../db/models/user';
 import facebook from './facebook';
+import google from './google';
 import kakao from './kakao';
 import local from './local';
 
@@ -27,4 +28,5 @@ export default (): void => {
   local();
   kakao();
   facebook();
+  google();
 };
