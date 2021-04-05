@@ -1,5 +1,6 @@
 import passport from 'passport';
 import User from '../db/models/user';
+import kakao from './kakao';
 import local from './local';
 
 type UserType = Express.User | User;
@@ -23,4 +24,5 @@ export default (): void => {
     }
   });
   local();
+  kakao();
 };

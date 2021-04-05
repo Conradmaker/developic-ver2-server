@@ -10,7 +10,9 @@ class User extends Model {
   public nickname!: string;
   public state!: number;
   public loginType!: 'local' | 'kakao' | 'google' | 'facebook';
-  public socialToken!: string;
+  public refreshToken?: string;
+  public accessToken?: string;
+  public socialId?: string;
   public lastLogin!: string;
   public introduce?: string;
   public birth?: string;
@@ -24,10 +26,6 @@ class User extends Model {
 
 User.init(
   {
-    id: {
-      type: DataTypes.STRING(50),
-      primaryKey: true,
-    },
     email: {
       type: DataTypes.STRING(30),
     },
@@ -50,7 +48,13 @@ User.init(
       allowNull: false,
       defaultValue: 'local',
     },
-    socialToken: {
+    refreshToken: {
+      type: DataTypes.STRING(50),
+    },
+    accessToken: {
+      type: DataTypes.STRING(50),
+    },
+    socialId: {
       type: DataTypes.STRING(50),
     },
     gender: {
