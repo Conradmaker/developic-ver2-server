@@ -60,6 +60,7 @@ export const associatePost = (db: DbType): void => {
   db.Post.hasMany(db.PostLog);
   db.Post.hasMany(db.DeclarePost);
   db.Post.hasMany(db.Comment);
+  db.Post.belongsTo(db.User);
   db.Post.belongsToMany(db.User, { through: 'LIKE', as: 'liker' });
   db.Post.belongsToMany(db.HashTag, { through: 'POST_HASHTAG' });
   db.Post.belongsToMany(db.PicStory, { through: 'STORY_POST' });
