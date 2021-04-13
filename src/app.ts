@@ -46,6 +46,7 @@ app.use(
   })
 );
 console.log(process.env.KAKAO_API);
+app.use('/image', express.static(path.join(__dirname, 'uploads')));
 
 app.use(passport.initialize());
 app.use(passport.session());
