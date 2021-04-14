@@ -3,6 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import PostImage from '../db/models/postImage';
+import MetaData from '../db/models/metaData';
 const uploadRouter = express.Router();
 try {
   fs.accessSync(path.join('src', 'uploads', 'post'));
@@ -44,5 +45,14 @@ uploadRouter.post(
     }
   }
 );
+uploadRouter.post('/exif', async (req, res, next) => {
+  try {
+    const metaData = await MetaData.create(req.body);
+    res.status(201).json(metaData);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
 
 export default uploadRouter;
