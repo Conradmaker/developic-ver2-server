@@ -12,10 +12,29 @@ try {
   fs.mkdirSync(path.join('src', 'uploads'));
   fs.mkdirSync(path.join('src', 'uploads', 'post'));
 }
+try {
+  fs.accessSync(path.join('src', 'uploads', 'thumbnail'));
+} catch (e) {
+  console.log('폴더가 없어서 생성합니다.');
+  fs.mkdirSync(path.join('src', 'uploads', 'thumbnail'));
+}
 const upload = multer({
   storage: multer.diskStorage({
     destination(req, res, done) {
       done(null, 'src/uploads/post');
+    },
+    filename(req, file, done) {
+      const ext = path.extname(file.originalname);
+      const basename = path.basename(file.originalname, ext);
+      done(null, basename + new Date().getTime() + ext);
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 },
+});
+const uploadThumb = multer({
+  storage: multer.diskStorage({
+    destination(req, res, done) {
+      done(null, 'src/uploads/thumbnail');
     },
     filename(req, file, done) {
       const ext = path.extname(file.originalname);
@@ -54,5 +73,11 @@ uploadRouter.post('/exif', async (req, res, next) => {
     next(e);
   }
 });
-
+uploadRouter.post(
+  '/thumbnail',
+  uploadThumb.single('image'),
+  (req, res, next) => {
+    res.status(201).send(req.file.filename);
+  }
+);
 export default uploadRouter;
