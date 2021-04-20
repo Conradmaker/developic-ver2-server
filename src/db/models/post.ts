@@ -1,5 +1,13 @@
-import { DataTypes, Model } from 'sequelize';
+import {
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyRemoveAssociationsMixin,
+  DataTypes,
+  Model,
+} from 'sequelize';
 import { DbType } from '.';
+import HashTag from './hashtag';
 import sequelize from './sequelize';
 
 class Post extends Model {
@@ -16,6 +24,11 @@ class Post extends Model {
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public addHashTags!: BelongsToManyAddAssociationsMixin<HashTag, number>;
+  public addHashTag!: BelongsToManyAddAssociationMixin<HashTag, number>;
+  public removeHashTags!: BelongsToManyRemoveAssociationsMixin<HashTag, string>;
+  public getHashTags!: BelongsToManyGetAssociationsMixin<HashTag>;
 }
 
 Post.init(
@@ -35,12 +48,11 @@ Post.init(
     },
     summary: {
       type: DataTypes.STRING(256),
-      allowNull: false,
     },
-    isPrimary: {
+    isPublic: {
       type: DataTypes.TINYINT(),
       allowNull: false,
-      defaultValue: 0,
+      defaultValue: 1,
     },
     hits: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
     thumbnail: {

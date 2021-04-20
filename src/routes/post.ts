@@ -1,41 +1,19 @@
 import express from 'express';
-import { Op } from 'sequelize';
-import HashTag from '../db/models/hashtag';
+import {
+  addHashTagController,
+  preSaveController,
+  searchHashTagsController,
+  submitPostController,
+} from '../controllers/post';
 
 const postRouter = express.Router();
 
-postRouter.post('/hashtag', async (req, res, next) => {
-  try {
-    const existTag = await HashTag.findOne({ where: { name: req.body.name } });
-    if (existTag)
-      return res.status(200).json({ id: existTag.id, name: existTag.name });
+postRouter.post('/hashtag', addHashTagController);
 
-    const newTag = await HashTag.create({ name: req.body.name });
-    return res.status(200).json({ id: newTag.id, name: newTag.name });
-  } catch (e) {
-    console.error(e);
-    next(e);
-  }
-});
+postRouter.get('/hashtag', searchHashTagsController);
 
-postRouter.get('/hashtag', async (req, res, next) => {
-  try {
-    const result = await HashTag.findAll({
-      where: {
-        [Op.or]: [
-          {
-            name: { [Op.like]: `%${req.query.keyword}%` },
-          },
-        ],
-      },
-      attributes: ['id', 'name'],
-      limit: 10,
-    });
-    res.status(200).json(result);
-  } catch (e) {
-    console.error(e);
-    next(e);
-  }
-});
+postRouter.post('/presave', preSaveController);
+
+postRouter.post('/submit', submitPostController);
 
 export default postRouter;
