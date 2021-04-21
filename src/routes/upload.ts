@@ -73,11 +73,7 @@ uploadRouter.post('/exif', async (req, res, next) => {
     next(e);
   }
 });
-uploadRouter.post(
-  '/thumbnail',
-  uploadThumb.single('image'),
-  (req, res, next) => {
-    res.status(201).send(req.file.filename);
-  }
-);
+uploadRouter.post('/thumbnail', uploadThumb.single('image'), (req, res) => {
+  res.status(201).send(req.file.filename);
+});
 export default uploadRouter;

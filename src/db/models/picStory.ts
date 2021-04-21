@@ -1,5 +1,12 @@
-import { DataTypes, Model } from 'sequelize';
+import {
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin,
+  DataTypes,
+  Model,
+} from 'sequelize';
 import { DbType } from '.';
+import Post from './post';
 import sequelize from './sequelize';
 
 class PicStory extends Model {
@@ -12,6 +19,10 @@ class PicStory extends Model {
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public addPost!: BelongsToManyAddAssociationMixin<Post, number>;
+  public removePost!: BelongsToManyRemoveAssociationMixin<Post, number>;
+  public getPosts!: BelongsToManyGetAssociationsMixin<Post>;
 }
 
 PicStory.init(

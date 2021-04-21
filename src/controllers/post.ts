@@ -85,6 +85,7 @@ export const submitPostController: RequestHandler = async (req, res, next) => {
       thumbnail: req.body.thumbnail,
       summary: req.body.summary,
       license: req.body.license,
+      state: 1,
     });
     res.status(201).json(post);
   } catch (e) {
