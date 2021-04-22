@@ -43,11 +43,10 @@ export const searchHashTagsController: RequestHandler = async (
 
 export const preSaveController: RequestHandler = async (req, res, next) => {
   try {
-    const postId = req.body.postId ? parseInt(req.body.postId, 10) : null;
+    const postId = req.body.PostId ? parseInt(req.body.PostId, 10) : null;
     if (postId) {
       const existPost = await Post.findOne({
         where: { id: postId },
-        include: [{ model: HashTag, attributes: ['id'] }],
       });
       if (!existPost) return res.status(400).send('게시글을 찾을 수 없습니다.');
       await existPost?.update({
@@ -63,8 +62,6 @@ export const preSaveController: RequestHandler = async (req, res, next) => {
         title: req.body.title,
         content: req.body.content,
         UserId: req.body.UserId,
-        //요약 지워야함
-        summary: '',
       });
       await newPost.addHashTags(req.body.tagList);
       return res.status(201).json({ postId: newPost.id });
@@ -88,6 +85,28 @@ export const submitPostController: RequestHandler = async (req, res, next) => {
       state: 1,
     });
     res.status(201).json(post);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+export const getTempPost: RequestHandler = async (req, res, next) => {
+  try {
+    const post = await Post.findOne({ where: { id: req.params.PostId } });
+    if (!post) return res.status(400).send('해당 게시글을 찾을 수 없습니다.');
+    const postTags = await post.getHashTags({ attributes: ['id', 'name'] });
+    return res.status(200).json({
+      id: post.id,
+      title: post.title,
+      content: post.content,
+      allowComment: post.allowComment,
+      license: post.license,
+      summary: post.summary,
+      isPublic: post.isPublic,
+      thumbnail: post.thumbnail,
+      tagList: postTags,
+    });
   } catch (e) {
     console.error(e);
     next(e);

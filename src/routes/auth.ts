@@ -2,11 +2,13 @@ import express from 'express';
 import passport from 'passport';
 import nodemailer from 'nodemailer';
 import {
+  authController,
   emailVerificationHandler,
   facebookLoginController,
   googleLoginController,
   kakaoLoginController,
   localLoginController,
+  logoutController,
   signUpController,
   socialLoginRetest,
 } from '../controllers/auth';
@@ -55,3 +57,9 @@ authRouter.get('/google/callback', googleLoginController);
 //NOTE: 소셜로그인 인증
 authRouter.get('/retest', socialLoginRetest);
 export default authRouter;
+
+//NOTE: 로그인 인증
+authRouter.get('/', authController);
+
+//NOTE: 로그아웃
+authRouter.get('/logout', logoutController);

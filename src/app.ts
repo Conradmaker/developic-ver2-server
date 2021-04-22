@@ -40,7 +40,6 @@ app.use(
       httpOnly: true,
       secure: false,
       domain: prod ? process.env.CLIENT_DOMAIN : undefined,
-      sameSite: 'none',
     },
     name: 'develuth',
   })

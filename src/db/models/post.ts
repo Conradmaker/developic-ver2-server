@@ -15,10 +15,10 @@ class Post extends Model {
   public state!: number;
   public title!: string;
   public content!: string;
-  public allowComments!: boolean;
+  public allowComment!: boolean;
   public license!: string;
   public summary!: string;
-  public isPrimary!: boolean;
+  public isPublic!: boolean;
   public hits!: number;
   public thumbnail?: string;
 
