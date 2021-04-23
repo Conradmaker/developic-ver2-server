@@ -74,8 +74,19 @@ export const localLoginController: RequestHandler = (req, res, next) => {
       if (loginErr) {
         return next(loginErr);
       }
-      //유저정보 커스텀
-      return res.status(200).json(user);
+      const computedUser = await User.findOne({
+        where: { id: user.id },
+        attributes: {
+          exclude: [
+            'password',
+            'state',
+            'createdAt',
+            'updatedAt',
+            'verificationCode',
+          ],
+        },
+      });
+      return res.status(200).json(computedUser);
     });
   })(req, res, next);
 };
@@ -138,10 +149,46 @@ export const socialLoginRetest: RequestHandler = async (req, res, next) => {
   try {
     const user = await User.findOne({
       where: { accessToken: req.query.token, loginType: req.query.type },
+      attributes: {
+        exclude: [
+          'password',
+          'state',
+          'createdAt',
+          'updatedAt',
+          'verificationCode',
+        ],
+      },
     });
     if (!user) return res.status(400).send('로그인중 에러발생');
     user.update({ lastLogin: new Date().toLocaleString() });
     res.status(200).json(user);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+export const authController: RequestHandler = async (req, res, next) => {
+  try {
+    const id = req.user?.id;
+    if (id) {
+      const user = await User.findOne({ where: { id } });
+      if (!user) return res.status(404).send('로그인을 다시 해주세요.');
+      return res.status(200).json(user);
+    } else {
+      return res.status(404).send('로그인을 다시 해주세요.');
+    }
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+export const logoutController: RequestHandler = async (req, res, next) => {
+  try {
+    await req.logout();
+    req.session.destroy(e => console.error(e));
+    res.send('ok');
   } catch (e) {
     console.error(e);
     next(e);
