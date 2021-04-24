@@ -34,6 +34,6 @@ export const associateComment = (db: DbType): void => {
   db.Comment.belongsTo(db.User);
   db.Comment.belongsTo(db.Post);
   db.Comment.hasMany(db.DeclareComment);
-  db.Comment.belongsToMany(db.User, { through: 'COMMENT_LIKE', as: 'liker' });
+  db.Comment.belongsToMany(db.User, { through: 'COMMENT_LIKE', as: 'likers' });
 };
 export default Comment;

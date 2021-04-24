@@ -9,6 +9,7 @@ import {
 import { DbType } from '.';
 import HashTag from './hashtag';
 import sequelize from './sequelize';
+import User from './user';
 
 class Post extends Model {
   public readonly id!: string;
@@ -29,6 +30,12 @@ class Post extends Model {
   public addHashTag!: BelongsToManyAddAssociationMixin<HashTag, number>;
   public removeHashTags!: BelongsToManyRemoveAssociationsMixin<HashTag, string>;
   public getHashTags!: BelongsToManyGetAssociationsMixin<HashTag>;
+
+  public addLiker!: BelongsToManyAddAssociationMixin<User, number>;
+  public removeLikers!: BelongsToManyRemoveAssociationsMixin<User, string>;
+  public getLikers!: BelongsToManyGetAssociationsMixin<User>;
+
+  public likeCount?: number;
 }
 
 Post.init(
@@ -73,7 +80,7 @@ export const associatePost = (db: DbType): void => {
   db.Post.hasMany(db.DeclarePost);
   db.Post.hasMany(db.Comment);
   db.Post.belongsTo(db.User);
-  db.Post.belongsToMany(db.User, { through: 'LIKE', as: 'liker' });
+  db.Post.belongsToMany(db.User, { through: 'POST_LIKE', as: 'likers' });
   db.Post.belongsToMany(db.HashTag, { through: 'POST_HASHTAG' });
   db.Post.belongsToMany(db.PicStory, { through: 'STORY_POST' });
 };

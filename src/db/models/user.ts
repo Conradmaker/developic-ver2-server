@@ -1,5 +1,13 @@
-import { DataTypes, Model } from 'sequelize';
+import {
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin,
+  DataTypes,
+  Model,
+} from 'sequelize';
 import { DbType } from '.';
+import Post from './post';
 import sequelize from './sequelize';
 
 class User extends Model {
@@ -22,6 +30,18 @@ class User extends Model {
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public addSubscriber!: BelongsToManyAddAssociationMixin<User, number>;
+  public removeSubscriber!: BelongsToManyRemoveAssociationMixin<User, string>;
+  public getSubscribers!: BelongsToManyGetAssociationsMixin<User>;
+
+  public addWriter!: BelongsToManyAddAssociationMixin<User, number>;
+  public removeWriter!: BelongsToManyRemoveAssociationMixin<User, string>;
+  public getWriters!: BelongsToManyGetAssociationsMixin<User>;
+
+  public addLikedPosts!: BelongsToManyAddAssociationMixin<Post, number>;
+  public removeLikedPosts!: BelongsToManyRemoveAssociationMixin<Post, string>;
+  public getLikedPosts!: BelongsToManyGetAssociationsMixin<Post>;
 }
 
 User.init(
@@ -99,12 +119,20 @@ export const associateUser = (db: DbType): void => {
   db.User.hasMany(db.ExhibitionImage);
   db.User.hasOne(db.UserIntro);
   db.User.hasMany(db.Post);
-  db.User.belongsToMany(db.User, { through: 'SUBSCRIBE', as: 'subscriber' });
-  db.User.belongsToMany(db.User, { through: 'SUBSCRIBE', as: 'writer' });
-  db.User.belongsToMany(db.Post, { through: 'POST_LIKE', as: 'likedPost' });
+  db.User.belongsToMany(db.User, {
+    through: 'SUBSCRIBE',
+    as: 'subscribers',
+    foreignKey: 'SubscriberId',
+  });
+  db.User.belongsToMany(db.User, {
+    through: 'SUBSCRIBE',
+    as: 'writers',
+    foreignKey: 'WriterId',
+  });
+  db.User.belongsToMany(db.Post, { through: 'POST_LIKE', as: 'likedPosts' });
   db.User.belongsToMany(db.Comment, {
     through: 'COMMENT_LIKE',
-    as: 'likedComment',
+    as: 'likedComments',
   });
 };
 export default User;
