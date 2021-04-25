@@ -36,6 +36,7 @@ class Post extends Model {
   public getLikers!: BelongsToManyGetAssociationsMixin<User>;
 
   public likeCount?: number;
+  public likers?: User[];
 }
 
 Post.init(

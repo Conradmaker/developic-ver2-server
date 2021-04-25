@@ -23,6 +23,8 @@ class PicStory extends Model {
   public addPost!: BelongsToManyAddAssociationMixin<Post, number>;
   public removePost!: BelongsToManyRemoveAssociationMixin<Post, number>;
   public getPosts!: BelongsToManyGetAssociationsMixin<Post>;
+
+  public Posts?: Post[];
 }
 
 PicStory.init(
