@@ -49,9 +49,13 @@ export const emailVerificationHandler: RequestHandler = async (
 ) => {
   try {
     const user = await User.findOne({
-      where: { email: req.query.email, verificationCode: req.query.code },
+      where: {
+        email: req.query.email,
+        verificationCode: req.query.code,
+        loginType: 'local',
+      },
     });
-    if (!user) return res.send('올바른 인증번호를 입력해주세요');
+    if (!user) return res.status(404).send('올바른 인증번호를 입력해주세요');
     await user.update({ verificationCode: 1 });
     return res.status(200).send('인증이 완료되었습니다. 로그인해주세요!');
   } catch (e) {
