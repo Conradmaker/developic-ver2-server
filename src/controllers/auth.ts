@@ -27,7 +27,7 @@ export const signUpController: RequestHandler = async (req, res, next) => {
       name: req.body.name,
       nickname: req.body.nickname,
       loginType: 'local',
-      avatar: 'initial_avatar',
+      avatar: 'http://localhost:8000/image/avatar/initial_avatar.png',
       verificationCode: randomNumber,
     });
     if (!user) return res.status(400).send('회원가입중 오류 발생');
@@ -89,6 +89,7 @@ export const localLoginController: RequestHandler = (req, res, next) => {
           ],
         },
       });
+      user.update({ lastLogin: new Date().toLocaleString() });
       return res.status(200).json(computedUser);
     });
   })(req, res, next);
@@ -108,7 +109,7 @@ export const kakaoLoginController: RequestHandler = (req, res, next) => {
         return next(loginErr);
       }
       return res.redirect(
-        `http://localhost:3000/auth?token=${user.accessToken}&type=kakao`
+        `http://localhost:3000/user/social?email=${user.email}&type=kakao`
       );
     });
   })(req, res, next);
@@ -125,7 +126,7 @@ export const facebookLoginController: RequestHandler = (req, res, next) => {
         return next(loginErr);
       }
       return res.redirect(
-        `http://localhost:3000/auth?token=${user.accessToken}&type=facebook`
+        `http://localhost:3000/user/social?email=${user.email}&type=facebook`
       );
     });
   })(req, res, next);
@@ -142,7 +143,7 @@ export const googleLoginController: RequestHandler = (req, res, next) => {
         return next(loginErr);
       }
       return res.redirect(
-        `http://localhost:3000/auth?token=${user.accessToken}&type=google`
+        `http://localhost:3000/user/social?email=${user.email}&type=google`
       );
     });
   })(req, res, next);
@@ -151,7 +152,10 @@ export const googleLoginController: RequestHandler = (req, res, next) => {
 export const socialLoginRetest: RequestHandler = async (req, res, next) => {
   try {
     const user = await User.findOne({
-      where: { accessToken: req.query.token, loginType: req.query.type },
+      where: {
+        email: req.body.email,
+        loginType: req.body.loginType,
+      },
       attributes: {
         exclude: [
           'password',

@@ -52,7 +52,7 @@ uploadRouter.post(
     try {
       console.dir(req.params);
       const newImage = await PostImage.create({
-        src: req.file.filename,
+        src: `http://localhost:8000/image/post${req.file.filename}`,
         UserId: parseInt(req.params.userId),
         PostId: 1,
       });
@@ -74,6 +74,6 @@ uploadRouter.post('/exif', async (req, res, next) => {
   }
 });
 uploadRouter.post('/thumbnail', uploadThumb.single('image'), (req, res) => {
-  res.status(201).send(req.file.filename);
+  res.status(201).send(`http://localhost:8000/image/post${req.file.filename}`);
 });
 export default uploadRouter;

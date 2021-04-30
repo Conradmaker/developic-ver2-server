@@ -32,7 +32,9 @@ export default (): void => {
               socialId: profile.id,
               gender: profile.gender === 'male' ? '남성' : '여성',
               //   birth: profile._json.kakao_account.birthday,
-              avatar: profile.photos ? profile.photos[0].value : '',
+              avatar: profile.photos
+                ? profile.photos[0].value
+                : 'http://localhost:8000/image/avatar/initial_avatar.png',
               lastLogin: new Date().toLocaleDateString('KO-kr'),
             });
             done(null, newUser, null);

@@ -29,7 +29,9 @@ export default (): void => {
               loginType: 'google',
               accessToken: accessToken,
               socialId: profile.id,
-              avatar: profile._json.picture,
+              avatar:
+                profile._json.picture ||
+                'http://localhost:8000/image/avatar/initial_avatar.png',
               lastLogin: new Date().toLocaleDateString('KO-kr'),
             });
             done(null, newUser);
