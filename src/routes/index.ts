@@ -5,6 +5,7 @@ import uploadRouter from './upload';
 import postRouter from './post';
 import picstoryRouter from './picstory';
 import blogRouter from './blog';
+import userRouter from './user';
 
 const router = express.Router();
 
@@ -14,5 +15,6 @@ router.use('/upload', uploadRouter);
 router.use('/post', postRouter);
 router.use('/picstory', picstoryRouter);
 router.use('/blog', blogRouter);
+router.use('/user', userRouter);
 
 export default router;
