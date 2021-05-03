@@ -18,3 +18,26 @@ export type UpdateUserIntroHandler = RequestHandler<
   },
   null
 >;
+export type UpdateUserInfoHandler = RequestHandler<
+  null,
+  unknown | string,
+  {
+    UserId: number;
+    gender: string;
+    birth: string;
+    nickname: string;
+  },
+  null
+>;
+export type UpdatePasswordHandler = RequestHandler<
+  null,
+  unknown | string,
+  { UserId: number; currentPassword: string; newPassword: string },
+  null
+>;
+export type DestroyUserHandler = RequestHandler<
+  { UserId: string },
+  unknown | string,
+  null,
+  null
+>;
