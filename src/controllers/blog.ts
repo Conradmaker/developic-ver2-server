@@ -96,7 +96,11 @@ export const getBloggerPicstoryListController: GetBloggerPicstoryListHandler = a
       attributes: ['id', 'title', 'description', 'thumbnail', 'updatedAt'],
       order: [['updatedAt', 'DESC']],
       include: [
-        { model: Post, attributes: ['id', 'title', 'thumbnail', 'hits'] },
+        {
+          model: Post,
+          attributes: ['id', 'title', 'thumbnail', 'hits'],
+          include: [{ model: User, as: 'likers', attributes: ['id'] }],
+        },
       ],
     });
     if (!picstories) return res.status(404).send('아이디를 확인해주세요.');

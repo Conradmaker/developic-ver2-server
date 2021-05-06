@@ -79,7 +79,7 @@ export const destroyPicstoryController: DestroyPicstoryHandler = async (
       where: { id: req.params.PicstoryId },
     });
     if (!result) return res.status(400).send('에러가 발생하였습니다.');
-    res.status(200).json({ id: req.params.PicstoryId });
+    res.status(200).json({ id: parseInt(req.params.PicstoryId) });
   } catch (e) {
     console.error(e);
     next(e);

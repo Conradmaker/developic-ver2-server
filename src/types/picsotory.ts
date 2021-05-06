@@ -24,7 +24,7 @@ export type RemovePostPicstoryHandler = RequestHandler<
 
 export type DestroyPicstoryHandler = RequestHandler<
   { PicstoryId: string },
-  { id: string } | string,
+  { id: number } | string,
   null,
   null
 >;

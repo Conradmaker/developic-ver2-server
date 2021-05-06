@@ -8,6 +8,7 @@ import {
 } from 'sequelize';
 import { DbType } from '.';
 import HashTag from './hashtag';
+import PicStory from './picStory';
 import sequelize from './sequelize';
 import User from './user';
 
@@ -37,6 +38,7 @@ class Post extends Model {
 
   public likeCount?: number;
   public likers?: User[];
+  public PicStories?: PicStory[];
 }
 
 Post.init(

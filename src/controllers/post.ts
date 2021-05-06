@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express';
 import { Op } from 'sequelize';
 import HashTag from '../db/models/hashtag';
+import PicStory from '../db/models/picStory';
 import Post from '../db/models/post';
 
 export const addHashTagController: RequestHandler = async (req, res, next) => {
@@ -93,7 +94,10 @@ export const submitPostController: RequestHandler = async (req, res, next) => {
 
 export const getTempPost: RequestHandler = async (req, res, next) => {
   try {
-    const post = await Post.findOne({ where: { id: req.params.PostId } });
+    const post = await Post.findOne({
+      where: { id: req.params.PostId },
+      include: [{ model: PicStory }],
+    });
     if (!post) return res.status(400).send('해당 게시글을 찾을 수 없습니다.');
     const postTags = await post.getHashTags({ attributes: ['id', 'name'] });
     return res.status(200).json({
@@ -106,6 +110,7 @@ export const getTempPost: RequestHandler = async (req, res, next) => {
       isPublic: post.isPublic,
       thumbnail: post.thumbnail,
       tagList: postTags,
+      PicStories: post.PicStories?.map(v => v.id),
     });
   } catch (e) {
     console.error(e);
