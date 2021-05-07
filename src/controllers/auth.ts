@@ -88,6 +88,10 @@ export const localLoginController: RequestHandler = (req, res, next) => {
             'verificationCode',
           ],
         },
+        include: [
+          { model: User, as: 'subscribers', attributes: ['id'] },
+          { model: User, as: 'writers', attributes: ['id'] },
+        ],
       });
       user.update({ lastLogin: new Date().toLocaleString() });
       return res.status(200).json(computedUser);

@@ -7,6 +7,7 @@ import {
   UpdateUserInfoHandler,
   UpdateUserIntroHandler,
   DestroyUserHandler,
+  ToggleSubscribeHandler,
 } from '../types/user';
 
 export const getUserDetailInfoController: GetUserDetailHandler = async (
@@ -115,6 +116,39 @@ export const destroyUserController: DestroyUserHandler = async (
     await UserIntro.destroy({ where: { UserId: req.params.UserId } });
     await user.destroy();
     res.status(200).send('회원정보가 삭제되었습니다.');
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//작가 구독하기
+export const subscribeWriter: ToggleSubscribeHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const user = await User.findOne({ where: { id: req.body.subscriberId } });
+    if (!user) return res.status(404).send('해당 유저를 찾을 수 없습니다.');
+    await user.addWriter(req.body.writerId);
+    res.status(200).json({ writerId: req.body.writerId });
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+//작가 구독취소
+export const unSubscribeWriter: ToggleSubscribeHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const user = await User.findOne({ where: { id: req.body.subscriberId } });
+    if (!user) return res.status(404).send('해당 유저를 찾을 수 없습니다.');
+    await user.removeWriter(req.body.writerId);
+    res.status(200).json({ writerId: req.body.writerId });
   } catch (e) {
     console.error(e);
     next(e);

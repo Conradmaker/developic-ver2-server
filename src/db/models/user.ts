@@ -33,11 +33,11 @@ class User extends Model {
   public readonly updatedAt!: Date;
 
   public addSubscriber!: BelongsToManyAddAssociationMixin<User, number>;
-  public removeSubscriber!: BelongsToManyRemoveAssociationMixin<User, string>;
+  public removeSubscriber!: BelongsToManyRemoveAssociationMixin<User, number>;
   public getSubscribers!: BelongsToManyGetAssociationsMixin<User>;
 
   public addWriter!: BelongsToManyAddAssociationMixin<User, number>;
-  public removeWriter!: BelongsToManyRemoveAssociationMixin<User, string>;
+  public removeWriter!: BelongsToManyRemoveAssociationMixin<User, number>;
   public getWriters!: BelongsToManyGetAssociationsMixin<User>;
 
   public addLikedPosts!: BelongsToManyAddAssociationMixin<Post, number>;

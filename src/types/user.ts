@@ -41,3 +41,9 @@ export type DestroyUserHandler = RequestHandler<
   null,
   null
 >;
+export type ToggleSubscribeHandler = RequestHandler<
+  null,
+  unknown | string,
+  { subscriberId: number; writerId: number },
+  null
+>;
