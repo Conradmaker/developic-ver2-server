@@ -123,12 +123,12 @@ export const associateUser = (db: DbType): void => {
   db.User.hasMany(db.Post);
   db.User.belongsToMany(db.User, {
     through: 'SUBSCRIBE',
-    as: 'subscribers',
+    as: 'writers',
     foreignKey: 'SubscriberId',
   });
   db.User.belongsToMany(db.User, {
     through: 'SUBSCRIBE',
-    as: 'writers',
+    as: 'subscribers',
     foreignKey: 'WriterId',
   });
   db.User.belongsToMany(db.Post, { through: 'POST_LIKE', as: 'likedPosts' });

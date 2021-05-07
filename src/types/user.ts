@@ -47,3 +47,9 @@ export type ToggleSubscribeHandler = RequestHandler<
   { subscriberId: number; writerId: number },
   null
 >;
+export type getSubscribeListHandler = RequestHandler<
+  { UserId: string },
+  unknown | string,
+  null,
+  { type: 'writer' | 'subscriber' | null }
+>;

@@ -7,6 +7,7 @@ import {
   destroyUserController,
   subscribeWriter,
   unSubscribeWriter,
+  getSubscribeList,
 } from '../controllers/user';
 
 const userRouter = express.Router();
@@ -18,5 +19,6 @@ userRouter.patch('/intro', updateUserIntroController);
 userRouter.delete('/:UserId', destroyUserController);
 userRouter.post('/subscribe/add', subscribeWriter);
 userRouter.post('/subscribe/remove', unSubscribeWriter);
+userRouter.get('/subscribe/:UserId', getSubscribeList);
 
 export default userRouter;

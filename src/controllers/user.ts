@@ -8,6 +8,7 @@ import {
   UpdateUserIntroHandler,
   DestroyUserHandler,
   ToggleSubscribeHandler,
+  getSubscribeListHandler,
 } from '../types/user';
 
 export const getUserDetailInfoController: GetUserDetailHandler = async (
@@ -129,9 +130,9 @@ export const subscribeWriter: ToggleSubscribeHandler = async (
   next
 ) => {
   try {
-    const user = await User.findOne({ where: { id: req.body.subscriberId } });
+    const user = await User.findOne({ where: { id: req.body.writerId } });
     if (!user) return res.status(404).send('해당 유저를 찾을 수 없습니다.');
-    await user.addWriter(req.body.writerId);
+    await user.addSubscriber(req.body.subscriberId);
     res.status(200).json({ writerId: req.body.writerId });
   } catch (e) {
     console.error(e);
@@ -145,10 +146,34 @@ export const unSubscribeWriter: ToggleSubscribeHandler = async (
   next
 ) => {
   try {
-    const user = await User.findOne({ where: { id: req.body.subscriberId } });
+    const user = await User.findOne({ where: { id: req.body.writerId } });
     if (!user) return res.status(404).send('해당 유저를 찾을 수 없습니다.');
-    await user.removeWriter(req.body.writerId);
+    await user.removeSubscriber(req.body.subscriberId);
     res.status(200).json({ writerId: req.body.writerId });
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+//구독자 (작가) 목록 조회
+export const getSubscribeList: getSubscribeListHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const attributes = ['id', 'nickname', 'avatar', 'introduce'];
+    if (!req.query.type)
+      return res.status(400).send('어떤 목록을 조회할지 요청해주세요.');
+    const user = await User.findOne({ where: { id: req.params.UserId } });
+    if (!user) return res.status(404).send('해당 유저를 찾을 수 없습니다.');
+    if (req.query.type === 'subscriber') {
+      const list = await user.getSubscribers({ attributes });
+      res.status(200).json(list);
+    } else {
+      const list = await user.getWriters({ attributes });
+      res.status(200).json(list);
+    }
   } catch (e) {
     console.error(e);
     next(e);
