@@ -3,6 +3,7 @@ import {
   BelongsToManyAddAssociationsMixin,
   BelongsToManyGetAssociationsMixin,
   BelongsToManyRemoveAssociationMixin,
+  BelongsToManyRemoveAssociationsMixin,
   DataTypes,
   Model,
 } from 'sequelize';
@@ -40,7 +41,8 @@ class User extends Model {
   public getWriters!: BelongsToManyGetAssociationsMixin<User>;
 
   public addLikedPosts!: BelongsToManyAddAssociationMixin<Post, number>;
-  public removeLikedPosts!: BelongsToManyRemoveAssociationMixin<Post, string>;
+  public removeLikedPosts!: BelongsToManyRemoveAssociationsMixin<Post, string>;
+  public removeLikedPost!: BelongsToManyRemoveAssociationMixin<Post, string>;
   public getLikedPosts!: BelongsToManyGetAssociationsMixin<Post>;
 }
 
