@@ -1,5 +1,12 @@
-import { DataTypes, Model } from 'sequelize';
+import {
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin,
+  DataTypes,
+  Model,
+} from 'sequelize';
 import { DbType } from '.';
+import PostImage from './postImage';
 import sequelize from './sequelize';
 
 class PhotoBinder extends Model {
@@ -10,6 +17,13 @@ class PhotoBinder extends Model {
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public addPostImage!: BelongsToManyAddAssociationMixin<PostImage, number>;
+  public removePostImage!: BelongsToManyRemoveAssociationMixin<
+    PostImage,
+    number
+  >;
+  public getPostImages!: BelongsToManyGetAssociationsMixin<PostImage>;
 }
 
 PhotoBinder.init(

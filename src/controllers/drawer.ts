@@ -1,13 +1,18 @@
+import PhotoBinder from '../db/models/photoBinder';
 import Post from '../db/models/post';
+import PostImage from '../db/models/postImage';
 import RecentView from '../db/models/recentView';
 import User from '../db/models/user';
 import {
   GetLikesListHandler,
+  GetPhotoBinderDetailHandler,
+  GetPhotoBinderListHandler,
   GetRecentViewsHandler,
   GetTempListHandler,
   RemoveLikesItemHandler,
   RemoveRecentViewHandler,
   RemoveTempPostHandler,
+  UpdatePhotoBinderDetailHandler,
 } from '../types/drawer';
 
 export const getLikesListController: GetLikesListHandler = async (
@@ -125,6 +130,64 @@ export const removeRecentViewController: RemoveRecentViewHandler = async (
     });
     if (!result) return res.status(400).send('알수없는 오류가 발생하였습니다.');
     return res.status(200).json({ recentId: +req.params.RecentId });
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//포토바인더 리스트 조회
+export const getPhotoBinderListController: GetPhotoBinderListHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const list = await PhotoBinder.findAll({
+      where: { UserId: req.params.UserId },
+      include: [{ model: PostImage, attributes: ['id', 'src'] }],
+    });
+    return res.status(200).json(list);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//포토바인더 디테일 조회
+export const getPhotoBinderDetailController: GetPhotoBinderDetailHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const detail = await PhotoBinder.findOne({
+      where: { id: req.params.BinderId },
+      include: [{ model: PostImage, attributes: ['id', 'src'] }],
+    });
+    return res.status(200).json(detail);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//바인더 정보 수정
+export const updatePhotoBinderDetailController: UpdatePhotoBinderDetailHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const binder = await PhotoBinder.findOne({
+      where: { id: req.body.BinderId },
+    });
+    if (!binder) return res.status(404).send('포토바인더를 찾을 수 없습니다.');
+    await binder.update({
+      title: req.body.title,
+      description: req.body.description,
+    });
+    return res.status(201).json(req.body);
   } catch (e) {
     console.error(e);
     next(e);

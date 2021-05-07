@@ -1,6 +1,5 @@
 import {
   BelongsToManyAddAssociationMixin,
-  BelongsToManyAddAssociationsMixin,
   BelongsToManyGetAssociationsMixin,
   BelongsToManyRemoveAssociationMixin,
   BelongsToManyRemoveAssociationsMixin,

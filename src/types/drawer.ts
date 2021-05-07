@@ -37,3 +37,21 @@ export type RemoveRecentViewHandler = RequestHandler<
   null,
   null
 >;
+export type GetPhotoBinderListHandler = RequestHandler<
+  { UserId: string },
+  unknown | string,
+  null,
+  null
+>;
+export type GetPhotoBinderDetailHandler = RequestHandler<
+  { BinderId: string },
+  unknown | string,
+  null,
+  null
+>;
+export type UpdatePhotoBinderDetailHandler = RequestHandler<
+  { BinderId: string },
+  unknown | string,
+  { title: string; description: string; BinderId: number },
+  null
+>;
