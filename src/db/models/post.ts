@@ -23,6 +23,7 @@ class Post extends Model {
   public isPublic!: boolean;
   public hits!: number;
   public thumbnail?: string;
+  public UserId?: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;

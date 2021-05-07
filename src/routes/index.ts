@@ -7,6 +7,7 @@ import picstoryRouter from './picstory';
 import blogRouter from './blog';
 import userRouter from './user';
 import drawerRouter from './drawer';
+import exhibitionRouter from './exhibition';
 
 const router = express.Router();
 
@@ -18,5 +19,5 @@ router.use('/picstory', picstoryRouter);
 router.use('/blog', blogRouter);
 router.use('/user', userRouter);
 router.use('/drawer', drawerRouter);
-
+router.use('/exhibition', exhibitionRouter);
 export default router;

@@ -58,7 +58,15 @@ export const getBloggerPostListController: GetBloggerPostListHandler = async (
       limit,
       offset,
       where: { UserId: req.params.UserId },
-      attributes: ['id', 'title', 'summary', 'thumbnail', 'hits', 'updatedAt'],
+      attributes: [
+        'id',
+        'title',
+        'summary',
+        'thumbnail',
+        'hits',
+        'updatedAt',
+        'UserId',
+      ],
       order: [['updatedAt', 'DESC']],
       include: [{ model: User, as: 'likers', attributes: ['id'] }],
     });
@@ -72,6 +80,7 @@ export const getBloggerPostListController: GetBloggerPostListHandler = async (
         hits: list[i].hits,
         likeCount: a.length,
         updatedAt: list[i].updatedAt,
+        UserId: list[i].UserId,
       } as Post;
     }
     res.status(200).json(list);
@@ -98,7 +107,7 @@ export const getBloggerPicstoryListController: GetBloggerPicstoryListHandler = a
       include: [
         {
           model: Post,
-          attributes: ['id', 'title', 'thumbnail', 'hits'],
+          attributes: ['id', 'title', 'thumbnail', 'hits', 'UserId'],
           include: [{ model: User, as: 'likers', attributes: ['id'] }],
         },
       ],
@@ -127,7 +136,7 @@ export const getBloggerPicPostListController: GetBloggerPicPostListHandler = asy
       include: [
         {
           model: Post,
-          attributes: ['id', 'title', 'thumbnail', 'summary', 'hits'],
+          attributes: ['id', 'title', 'thumbnail', 'summary', 'hits', 'UserId'],
           order: [['updatedAt', 'DESC']],
           include: [{ model: User, as: 'likers', attributes: ['id'] }],
         },
@@ -141,6 +150,7 @@ export const getBloggerPicPostListController: GetBloggerPicPostListHandler = asy
       thumbnail: post.thumbnail,
       hits: post.hits,
       likeCount: (post.likers as User[]).length,
+      UserId: post.UserId,
     }));
     return res.status(200).json({
       id: picPosts.id,
