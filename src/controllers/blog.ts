@@ -107,7 +107,14 @@ export const getBloggerPicstoryListController: GetBloggerPicstoryListHandler = a
       include: [
         {
           model: Post,
-          attributes: ['id', 'title', 'thumbnail', 'hits', 'UserId'],
+          attributes: [
+            'id',
+            'title',
+            'thumbnail',
+            'hits',
+            'UserId',
+            'updatedAt',
+          ],
           include: [{ model: User, as: 'likers', attributes: ['id'] }],
         },
       ],
@@ -136,7 +143,15 @@ export const getBloggerPicPostListController: GetBloggerPicPostListHandler = asy
       include: [
         {
           model: Post,
-          attributes: ['id', 'title', 'thumbnail', 'summary', 'hits', 'UserId'],
+          attributes: [
+            'id',
+            'title',
+            'thumbnail',
+            'summary',
+            'hits',
+            'UserId',
+            'updatedAt',
+          ],
           order: [['updatedAt', 'DESC']],
           include: [{ model: User, as: 'likers', attributes: ['id'] }],
         },
