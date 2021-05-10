@@ -13,6 +13,8 @@ import {
   RemoveRecentViewHandler,
   RemoveTempPostHandler,
   UpdatePhotoBinderDetailHandler,
+  RemoveBinderPhotoHandler,
+  RemovePhotoBinderHandler,
 } from '../types/drawer';
 
 export const getLikesListController: GetLikesListHandler = async (
@@ -188,6 +190,45 @@ export const updatePhotoBinderDetailController: UpdatePhotoBinderDetailHandler =
       description: req.body.description,
     });
     return res.status(201).json(req.body);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//바인더 안의 선택 사진들 삭제
+export const removeBinderPhotoController: RemoveBinderPhotoHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const binder = await PhotoBinder.findOne({
+      where: { id: req.body.BinderId },
+    });
+    if (!binder) return res.status(404).send('바인더를 찾을 수 없습니다.');
+    for (let index = 0; index < req.body.photoIdArr.length; index++) {
+      await binder.removePostImage(req.body.photoIdArr[index]);
+    }
+    res.status(200).json(req.body.photoIdArr);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//포토바인더 삭제
+export const removePhotoBinderController: RemovePhotoBinderHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const result = await PhotoBinder.destroy({
+      where: { id: req.params.BinderId },
+    });
+    if (!result) return res.status(400).send('삭제에 실패하였습니다.');
+    return res.status(200).json({ binderId: +req.params.BinderId });
   } catch (e) {
     console.error(e);
     next(e);

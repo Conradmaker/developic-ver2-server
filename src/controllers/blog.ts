@@ -166,6 +166,7 @@ export const getBloggerPicPostListController: GetBloggerPicPostListHandler = asy
       hits: post.hits,
       likeCount: (post.likers as User[]).length,
       UserId: post.UserId,
+      updatedAt: post.updatedAt,
     }));
     return res.status(200).json({
       id: picPosts.id,

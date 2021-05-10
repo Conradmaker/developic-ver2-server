@@ -55,3 +55,15 @@ export type UpdatePhotoBinderDetailHandler = RequestHandler<
   { title: string; description: string; BinderId: number },
   null
 >;
+export type RemoveBinderPhotoHandler = RequestHandler<
+  { BinderId: string },
+  unknown | string,
+  { photoIdArr: number[]; BinderId: number },
+  null
+>;
+export type RemovePhotoBinderHandler = RequestHandler<
+  { BinderId: string },
+  unknown | string,
+  null,
+  null
+>;
