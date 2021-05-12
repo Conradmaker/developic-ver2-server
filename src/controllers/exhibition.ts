@@ -51,7 +51,7 @@ export const getExhibitionDetail: GetExhibitionDetailHandler = async (
   next
 ) => {
   try {
-    const detailInfo = await Exhibition.findAll({
+    const detailInfo = await Exhibition.findOne({
       where: { id: req.params.ExhibitionId },
       include: [{ model: User, attributes: ['id', 'email', 'name', 'avatar'] }],
     });
