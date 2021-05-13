@@ -8,6 +8,7 @@ import PicStory from '../db/models/picStory';
 import Post from '../db/models/post';
 import PostImage from '../db/models/postImage';
 import PostLog from '../db/models/postLog';
+import RecentView from '../db/models/recentView';
 import User from '../db/models/user';
 import { GetPhotoDetailHandler, GetPostDetailHandler } from '../types/post';
 
@@ -158,6 +159,21 @@ export const getPostDetail: GetPostDetailHandler = async (req, res, next) => {
       score: 1,
       PostId: post.id,
     });
+    if (req.user) {
+      const existView = await RecentView.findOne({
+        where: { UserId: req.user.id, PostId: post.id },
+      });
+      if (existView) {
+        existView.update({ date: new Date().toLocaleDateString() });
+      } else {
+        RecentView.create({
+          date: new Date().toLocaleDateString(),
+          UserId: req.user.id,
+          PostId: post.id,
+        });
+      }
+    }
+
     return res.status(200).json(post);
   } catch (e) {
     console.error(e);
