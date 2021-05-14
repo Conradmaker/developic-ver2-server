@@ -65,9 +65,10 @@ export const getBloggerPostListController: GetBloggerPostListHandler = async (
         'thumbnail',
         'hits',
         'updatedAt',
+        'createdAt',
         'UserId',
       ],
-      order: [['updatedAt', 'DESC']],
+      order: [['createdAt', 'DESC']],
       include: [{ model: User, as: 'likers', attributes: ['id'] }],
     });
     for (let i = 0; i < list.length; i++) {
@@ -80,6 +81,7 @@ export const getBloggerPostListController: GetBloggerPostListHandler = async (
         hits: list[i].hits,
         likeCount: a.length,
         updatedAt: list[i].updatedAt,
+        createdAt: list[i].createdAt,
         UserId: list[i].UserId,
       } as Post;
     }
@@ -102,8 +104,15 @@ export const getBloggerPicstoryListController: GetBloggerPicstoryListHandler = a
       where: { UserId: req.params.UserId },
       limit,
       offset,
-      attributes: ['id', 'title', 'description', 'thumbnail', 'updatedAt'],
-      order: [['updatedAt', 'DESC']],
+      attributes: [
+        'id',
+        'title',
+        'description',
+        'thumbnail',
+        'updatedAt',
+        'createdAt',
+      ],
+      order: [['createdAt', 'DESC']],
       include: [
         {
           model: Post,
@@ -114,6 +123,7 @@ export const getBloggerPicstoryListController: GetBloggerPicstoryListHandler = a
             'hits',
             'UserId',
             'updatedAt',
+            'createdAt',
           ],
           include: [{ model: User, as: 'likers', attributes: ['id'] }],
         },
@@ -151,8 +161,9 @@ export const getBloggerPicPostListController: GetBloggerPicPostListHandler = asy
             'hits',
             'UserId',
             'updatedAt',
+            'createdAt',
           ],
-          order: [['updatedAt', 'DESC']],
+          order: [['createdAt', 'DESC']],
           include: [{ model: User, as: 'likers', attributes: ['id'] }],
         },
       ],
@@ -167,6 +178,7 @@ export const getBloggerPicPostListController: GetBloggerPicPostListHandler = asy
       likeCount: (post.likers as User[]).length,
       UserId: post.UserId,
       updatedAt: post.updatedAt,
+      createdAt: post.createdAt,
     }));
     return res.status(200).json({
       id: picPosts.id,
