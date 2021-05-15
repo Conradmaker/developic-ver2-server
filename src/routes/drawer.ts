@@ -11,6 +11,7 @@ import {
   updatePhotoBinderDetailController,
   removeBinderPhotoController,
   removePhotoBinderController,
+  addBinderPhotoController,
 } from '../controllers/drawer';
 
 const drawerRouter = express.Router();
@@ -27,6 +28,7 @@ drawerRouter.delete('/binder/:BinderId', removePhotoBinderController);
 drawerRouter.patch('/binder/detail', updatePhotoBinderDetailController);
 drawerRouter.get('/binder/detail/:BinderId', getPhotoBinderDetailController);
 
+drawerRouter.post('/binder/photo', addBinderPhotoController);
 drawerRouter.patch('/binder/photo', removeBinderPhotoController);
 
 export default drawerRouter;

@@ -1,5 +1,6 @@
 import {
   BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
   BelongsToManyGetAssociationsMixin,
   BelongsToManyRemoveAssociationMixin,
   DataTypes,
@@ -19,6 +20,7 @@ class PhotoBinder extends Model {
   public readonly updatedAt!: Date;
 
   public addPostImage!: BelongsToManyAddAssociationMixin<PostImage, number>;
+  public addPostImages!: BelongsToManyAddAssociationsMixin<PostImage, number>;
   public removePostImage!: BelongsToManyRemoveAssociationMixin<
     PostImage,
     number

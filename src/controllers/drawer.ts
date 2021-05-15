@@ -15,6 +15,7 @@ import {
   UpdatePhotoBinderDetailHandler,
   RemoveBinderPhotoHandler,
   RemovePhotoBinderHandler,
+  AddBinderPhotoHandler,
 } from '../types/drawer';
 
 export const getLikesListController: GetLikesListHandler = async (
@@ -210,7 +211,26 @@ export const removeBinderPhotoController: RemoveBinderPhotoHandler = async (
     for (let index = 0; index < req.body.photoIdArr.length; index++) {
       await binder.removePostImage(req.body.photoIdArr[index]);
     }
-    res.status(200).json(req.body.photoIdArr);
+    res.status(200).json(req.body);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//바인더 안의 선택 사진들 추가
+export const addBinderPhotoController: AddBinderPhotoHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const binder = await PhotoBinder.findOne({
+      where: { id: req.body.BinderId },
+    });
+    if (!binder) return res.status(404).send('바인더를 찾을 수 없습니다.');
+    await binder.addPostImages(req.body.photoIdArr);
+    res.status(200).json(req.body);
   } catch (e) {
     console.error(e);
     next(e);
