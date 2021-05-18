@@ -49,6 +49,18 @@ export type GetPhotoBinderDetailHandler = RequestHandler<
   null,
   null
 >;
+export type CreatePhotoBinderHandler = RequestHandler<
+  null,
+  unknown | string,
+  { title: string; description: string; UserId: number },
+  null
+>;
+export type RemovePhotoBinderHandler = RequestHandler<
+  { BinderId: string },
+  unknown | string,
+  null,
+  null
+>;
 export type UpdatePhotoBinderDetailHandler = RequestHandler<
   { BinderId: string },
   unknown | string,
@@ -65,11 +77,5 @@ export type AddBinderPhotoHandler = RequestHandler<
   { BinderId: string },
   unknown | string,
   { photoIdArr: number[]; BinderId: number },
-  null
->;
-export type RemovePhotoBinderHandler = RequestHandler<
-  { BinderId: string },
-  unknown | string,
-  null,
   null
 >;

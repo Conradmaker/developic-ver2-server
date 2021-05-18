@@ -1,5 +1,6 @@
 import {
   BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
   BelongsToManyGetAssociationsMixin,
   BelongsToManyRemoveAssociationMixin,
   BelongsToManyRemoveAssociationsMixin,
@@ -39,9 +40,10 @@ class User extends Model {
   public removeWriter!: BelongsToManyRemoveAssociationMixin<User, number>;
   public getWriters!: BelongsToManyGetAssociationsMixin<User>;
 
-  public addLikedPosts!: BelongsToManyAddAssociationMixin<Post, number>;
-  public removeLikedPosts!: BelongsToManyRemoveAssociationsMixin<Post, string>;
-  public removeLikedPost!: BelongsToManyRemoveAssociationMixin<Post, string>;
+  public addLikedPost!: BelongsToManyAddAssociationMixin<Post, number>;
+  public addLikedPosts!: BelongsToManyAddAssociationsMixin<Post, number>;
+  public removeLikedPosts!: BelongsToManyRemoveAssociationsMixin<Post, number>;
+  public removeLikedPost!: BelongsToManyRemoveAssociationMixin<Post, number>;
   public getLikedPosts!: BelongsToManyGetAssociationsMixin<Post>;
 }
 

@@ -53,3 +53,9 @@ export type getSubscribeListHandler = RequestHandler<
   null,
   { type: 'writer' | 'subscriber' | null }
 >;
+export type ToggleLikePostHandler = RequestHandler<
+  null,
+  unknown | string,
+  { UserId: number; PostId: number },
+  null
+>;

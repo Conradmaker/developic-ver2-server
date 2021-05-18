@@ -9,6 +9,7 @@ import {
   DestroyUserHandler,
   ToggleSubscribeHandler,
   getSubscribeListHandler,
+  ToggleLikePostHandler,
 } from '../types/user';
 
 export const getUserDetailInfoController: GetUserDetailHandler = async (
@@ -174,6 +175,40 @@ export const getSubscribeList: getSubscribeListHandler = async (
       const list = await user.getWriters({ attributes });
       res.status(200).json(list);
     }
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//좋아요 추가
+export const addLikePostController: ToggleLikePostHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const user = await User.findOne({ where: { id: req.body.UserId } });
+    if (!user) return res.status(404).send('다시 로그인 해주세요.');
+    await user.addLikedPost(req.body.PostId);
+    return res.status(200).json(req.body);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//좋아요 취소
+export const removeLikePostController: ToggleLikePostHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const user = await User.findOne({ where: { id: req.body.UserId } });
+    if (!user) return res.status(404).send('다시 로그인 해주세요.');
+    await user.removeLikedPost(req.body.PostId);
+    return res.status(200).json(req.body);
   } catch (e) {
     console.error(e);
     next(e);

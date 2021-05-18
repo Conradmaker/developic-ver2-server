@@ -16,6 +16,7 @@ import {
   RemoveBinderPhotoHandler,
   RemovePhotoBinderHandler,
   AddBinderPhotoHandler,
+  CreatePhotoBinderHandler,
 } from '../types/drawer';
 
 export const getLikesListController: GetLikesListHandler = async (
@@ -45,7 +46,7 @@ export const removeLikesItemController: RemoveLikesItemHandler = async (
   try {
     const user = await User.findOne({ where: { id: req.params.UserId } });
     if (!user) return res.status(404).send('해당 유저를 찾을 수 없습니다.');
-    await user.removeLikedPost(req.query.PostId);
+    await user.removeLikedPost(+req.query.PostId);
     return res.status(200).json({ postId: parseInt(req.query.PostId) });
   } catch (e) {
     console.error(e);
@@ -231,6 +232,27 @@ export const addBinderPhotoController: AddBinderPhotoHandler = async (
     if (!binder) return res.status(404).send('바인더를 찾을 수 없습니다.');
     await binder.addPostImages(req.body.photoIdArr);
     res.status(200).json(req.body);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//포토바인더 생성
+export const createPhotoBinderController: CreatePhotoBinderHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const newBinder = await PhotoBinder.create(req.body);
+    const computedBinder = await PhotoBinder.findOne({
+      where: { id: newBinder.id },
+      include: [{ model: PostImage, attributes: ['id', 'src'] }],
+    });
+    if (!computedBinder)
+      return res.status(400).send('생성중 오류가 발생하였습니다.');
+    return res.status(201).json(computedBinder);
   } catch (e) {
     console.error(e);
     next(e);
