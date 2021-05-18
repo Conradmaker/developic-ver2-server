@@ -1,12 +1,15 @@
 import express from 'express';
 import {
   addHashTagController,
+  createCommentController,
   getPhotoDetail,
   getPostDetail,
   getTempPost,
   preSaveController,
+  removeCommentController,
   searchHashTagsController,
   submitPostController,
+  updateCommentController,
 } from '../controllers/post';
 
 const postRouter = express.Router();
@@ -24,5 +27,11 @@ postRouter.get('/temp/:PostId', getTempPost);
 postRouter.get('/photo/:PhotoId', getPhotoDetail);
 
 postRouter.get('/:PostId', getPostDetail);
+
+postRouter.post('/comment', createCommentController);
+
+postRouter.patch('/comment', updateCommentController);
+
+postRouter.delete('/comment/:CommentId', removeCommentController);
 
 export default postRouter;

@@ -10,7 +10,13 @@ import PostImage from '../db/models/postImage';
 import PostLog from '../db/models/postLog';
 import RecentView from '../db/models/recentView';
 import User from '../db/models/user';
-import { GetPhotoDetailHandler, GetPostDetailHandler } from '../types/post';
+import {
+  CreateCommentHandler,
+  GetPhotoDetailHandler,
+  GetPostDetailHandler,
+  RemoveCommentHandler,
+  UpdateCommentHandler,
+} from '../types/post';
 
 export const addHashTagController: RequestHandler = async (req, res, next) => {
   try {
@@ -198,6 +204,73 @@ export const getPhotoDetail: GetPhotoDetailHandler = async (req, res, next) => {
     });
     if (!post) return res.status(404).send('게시글을 찾을 수 없습니다.');
     return res.status(200).json(post);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//댓글 작성
+export const createCommentController: CreateCommentHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const newComment = await Comment.create(req.body);
+    const computedComment = await Comment.findOne({
+      where: { id: newComment.id },
+      include: [
+        { model: User, attributes: ['id', 'nickname', 'avatar', 'introduce'] },
+      ],
+    });
+    return res.status(201).json(computedComment);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//댓글 수정
+export const updateCommentController: UpdateCommentHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    await Comment.update(
+      { content: req.body.content },
+      { where: { id: req.body.CommentId } }
+    );
+    const computedComment = await Comment.findOne({
+      where: { id: req.body.CommentId },
+      include: [
+        { model: User, attributes: ['id', 'nickname', 'avatar', 'introduce'] },
+      ],
+    });
+    return res.status(201).json(computedComment);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//댓글 삭제
+export const removeCommentController: RemoveCommentHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const comment = await Comment.findOne({
+      where: { id: req.params.CommentId },
+      include: [
+        { model: User, attributes: ['id', 'nickname', 'avatar', 'introduce'] },
+      ],
+    });
+    if (!comment) return res.status(404).send('해당 댓글을 찾을 수 없습니다.');
+    await comment.destroy();
+    return res.status(201).json(comment);
   } catch (e) {
     console.error(e);
     next(e);
