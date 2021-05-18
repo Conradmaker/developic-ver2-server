@@ -57,6 +57,19 @@ const uploadThumb = multer({
   }),
   limits: { fileSize: 20 * 1024 * 1024 },
 });
+const uploadPoster = multer({
+  storage: multer.diskStorage({
+    destination(req, res, done) {
+      done(null, 'src/uploads/poster');
+    },
+    filename(req, file, done) {
+      const ext = path.extname(file.originalname);
+      const basename = path.basename(file.originalname, ext);
+      done(null, basename + new Date().getTime() + ext);
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 },
+});
 const uploadExhibition = multer({
   storage: multer.diskStorage({
     destination(req, res, done) {
@@ -124,7 +137,7 @@ uploadRouter.post(
   }
 );
 
-uploadRouter.post('/poster', uploadThumb.single('image'), (req, res) => {
+uploadRouter.post('/poster', uploadPoster.single('image'), (req, res) => {
   res
     .status(201)
     .send(`http://localhost:8000/image/poster/${req.file.filename}`);

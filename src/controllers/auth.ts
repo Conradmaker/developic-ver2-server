@@ -5,6 +5,8 @@ import { mailTemplate } from '../utils/makeMail';
 import User from '../db/models/user';
 import { RequestHandler } from 'express';
 import passport from 'passport';
+import Post from '../db/models/post';
+import Comment from '../db/models/comment';
 
 export const signUpController: RequestHandler = async (req, res, next) => {
   try {
@@ -91,6 +93,8 @@ export const localLoginController: RequestHandler = (req, res, next) => {
         include: [
           { model: User, as: 'subscribers', attributes: ['id'] },
           { model: User, as: 'writers', attributes: ['id'] },
+          { model: Post, as: 'likedPosts', attributes: ['id'] },
+          { model: Comment, as: 'likedComments', attributes: ['id'] },
         ],
       });
       user.update({ lastLogin: new Date().toLocaleString() });
@@ -169,6 +173,12 @@ export const socialLoginRetest: RequestHandler = async (req, res, next) => {
           'verificationCode',
         ],
       },
+      include: [
+        { model: User, as: 'subscribers', attributes: ['id'] },
+        { model: User, as: 'writers', attributes: ['id'] },
+        { model: Post, as: 'likedPosts', attributes: ['id'] },
+        { model: Comment, as: 'likedComments', attributes: ['id'] },
+      ],
     });
     if (!user) return res.status(400).send('로그인중 에러발생');
     user.update({ lastLogin: new Date().toLocaleString() });
@@ -183,7 +193,24 @@ export const authController: RequestHandler = async (req, res, next) => {
   try {
     const id = req.user?.id;
     if (id) {
-      const user = await User.findOne({ where: { id } });
+      const user = await User.findOne({
+        where: { id },
+        attributes: {
+          exclude: [
+            'password',
+            'state',
+            'createdAt',
+            'updatedAt',
+            'verificationCode',
+          ],
+        },
+        include: [
+          { model: User, as: 'subscribers', attributes: ['id'] },
+          { model: User, as: 'writers', attributes: ['id'] },
+          { model: Post, as: 'likedPosts', attributes: ['id'] },
+          { model: Comment, as: 'likedComments', attributes: ['id'] },
+        ],
+      });
       if (!user) return res.status(404).send('로그인을 다시 해주세요.');
       return res.status(200).json(user);
     } else {
