@@ -112,6 +112,24 @@ export const submitPostController: RequestHandler = async (req, res, next) => {
   }
 };
 
+//포스트 삭제
+export const removePostController: RequestHandler = async (req, res, next) => {
+  try {
+    const post = await Post.findOne({
+      where: { id: req.params.PostId },
+      include: [{ model: User, attributes: ['id'] }],
+    });
+    if (!post) return res.status(400).send('게시글을 찾을 수 없습니다.');
+    if (post.UserId !== +(req.user as User).id)
+      return res.status(400).send('작성자와 로그인유저가 일치하지 않습니다.');
+    await post.destroy();
+    res.status(201).json(post);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
 export const getTempPost: RequestHandler = async (req, res, next) => {
   try {
     const post = await Post.findOne({

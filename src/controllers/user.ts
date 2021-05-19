@@ -92,7 +92,7 @@ export const updateUserIntroController: UpdateUserIntroHandler = async (
     const user = await User.findOne({ where: { id: req.body.UserId } });
     if (!user) return res.status(404).send('해당 유저를 찾을 수 없습니다.');
     await user.update({ introduce: req.body.summary });
-    const result = await UserIntro.update(
+    await UserIntro.update(
       {
         introduction: req.body.introduction,
         website: req.body.website,

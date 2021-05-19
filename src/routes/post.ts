@@ -2,6 +2,7 @@ import express from 'express';
 import {
   addHashTagController,
   createCommentController,
+  removePostController,
   getPhotoDetail,
   getPostDetail,
   getTempPost,
@@ -26,12 +27,14 @@ postRouter.get('/temp/:PostId', getTempPost);
 
 postRouter.get('/photo/:PhotoId', getPhotoDetail);
 
-postRouter.get('/:PostId', getPostDetail);
-
 postRouter.post('/comment', createCommentController);
 
 postRouter.patch('/comment', updateCommentController);
 
 postRouter.delete('/comment/:CommentId', removeCommentController);
+
+postRouter.get('/:PostId', getPostDetail);
+
+postRouter.delete('/:PostId', removePostController);
 
 export default postRouter;
