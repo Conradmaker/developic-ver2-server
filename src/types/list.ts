@@ -3,8 +3,14 @@ import { RequestHandler } from 'express';
 export type GetWriterListHandler = RequestHandler<
   unknown,
   unknown,
-  {},
+  unknown,
   { type: 'suber' | 'all'; userId?: number; limit?: string }
+>;
+export type GetFeedListHandler = RequestHandler<
+  { UserId: string },
+  unknown,
+  unknown,
+  { limit?: string; offset?: string }
 >;
 export type GetPostListHandler = RequestHandler<
   unknown,

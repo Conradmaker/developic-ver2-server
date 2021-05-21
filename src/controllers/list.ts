@@ -1,3 +1,4 @@
+import { Op, Sequelize } from 'sequelize';
 import { sequelize } from '../db/models';
 import Exhibition from '../db/models/exhibition';
 import ExhibitionImage from '../db/models/exhibitionImage';
@@ -7,8 +8,10 @@ import {
   GetExhibitionListHandler,
   GetPostListHandler,
   GetWriterListHandler,
+  GetFeedListHandler,
 } from '../types/list';
 
+//작가 최근활동 순 조회
 export const getWriterList: GetWriterListHandler = async (req, res, next) => {
   try {
     const type: 'suber' | 'all' = req.query.type;
@@ -44,6 +47,44 @@ from (select *
       raw: true,
     });
     res.status(200).send(list[0]);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//피드 불러오기
+export const getFeedList: GetFeedListHandler = async (req, res, next) => {
+  try {
+    const limit = req.query.limit ? +req.query.limit : 12;
+    const offset = req.query.offset ? +req.query.offset : 0;
+    const list = await Post.findAll({
+      where: {
+        UserId: {
+          [Op.in]: Sequelize.literal(
+            `(select S.WriterId from SUBSCRIBE S join USER U on U.id = S.WriterId where S.SubscriberId = ${req.params.UserId})`
+          ),
+        },
+        state: 1,
+      },
+      limit,
+      offset,
+      attributes: [
+        'id',
+        'title',
+        'summary',
+        'hits',
+        'thumbnail',
+        'createdAt',
+        'updatedAt',
+      ],
+      include: [
+        { model: User, attributes: ['id', 'nickname', 'avatar', 'introduce'] },
+        { model: User, as: 'likers', attributes: ['id'] },
+      ],
+      order: [['createdAt', 'DESC']],
+    });
+    res.status(200).json(list);
   } catch (e) {
     console.error(e);
     next(e);
