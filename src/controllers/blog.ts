@@ -21,7 +21,7 @@ export const getBloggerInfoController: GetBloggerInfoHandler = async (
     });
     if (!user) return res.status(404).send('해당 유저를 찾을 수 없습니다.');
     const userInfo = await UserIntro.findOne({
-      where: { id: req.params.UserId },
+      where: { UserId: req.params.UserId },
       attributes: ['introduction', 'website', 'mostlyUseModel'],
     });
     const suber = await user.getSubscribers({ attributes: ['id'] });
@@ -57,7 +57,7 @@ export const getBloggerPostListController: GetBloggerPostListHandler = async (
     const list = await Post.findAll({
       limit,
       offset,
-      where: { UserId: req.params.UserId },
+      where: { UserId: req.params.UserId, state: 1 },
       attributes: [
         'id',
         'title',
@@ -116,9 +116,11 @@ export const getBloggerPicstoryListController: GetBloggerPicstoryListHandler = a
       include: [
         {
           model: Post,
+          where: { state: 1 },
           attributes: [
             'id',
             'title',
+            'state',
             'thumbnail',
             'hits',
             'UserId',
@@ -153,6 +155,7 @@ export const getBloggerPicPostListController: GetBloggerPicPostListHandler = asy
       include: [
         {
           model: Post,
+          where: { state: 1 },
           attributes: [
             'id',
             'title',

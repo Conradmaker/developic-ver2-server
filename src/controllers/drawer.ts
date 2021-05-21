@@ -29,7 +29,15 @@ export const getLikesListController: GetLikesListHandler = async (
     if (!user) return res.status(404).send('해당 유저를 찾을 수 없습니다.');
     const likes = await user.getLikedPosts({
       include: [{ model: User, attributes: ['id', 'nickname', 'avatar'] }],
-      attributes: ['id', 'title', 'summary', 'hits', 'thumbnail', 'updatedAt'],
+      attributes: [
+        'id',
+        'title',
+        'summary',
+        'hits',
+        'thumbnail',
+        'createdAt',
+        'updatedAt',
+      ],
     });
     res.status(200).json(likes);
   } catch (e) {
@@ -63,7 +71,7 @@ export const getTempListController: GetTempListHandler = async (
   try {
     const postList = await Post.findAll({
       where: { UserId: req.params.UserId, state: 0 },
-      attributes: ['id', 'content', 'title', 'updatedAt'],
+      attributes: ['id', 'content', 'title', 'createdAt', 'updatedAt'],
     });
     if (!postList) return res.status(400).send('알수없는 에러 발생');
     return res.status(200).json(postList);
@@ -108,6 +116,7 @@ export const getRecentViewsController: GetRecentViewsHandler = async (
             'summary',
             'hits',
             'thumbnail',
+            'createdAt',
             'updatedAt',
           ],
         },
