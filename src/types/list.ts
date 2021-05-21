@@ -3,8 +3,8 @@ import { RequestHandler } from 'express';
 export type GetWriterListHandler = RequestHandler<
   unknown,
   unknown,
-  unknown,
-  { sort: 'popular' | 'recent'; limit?: string; offset?: string }
+  {},
+  { type: 'suber' | 'all'; userId?: number; limit?: string }
 >;
 export type GetPostListHandler = RequestHandler<
   unknown,
