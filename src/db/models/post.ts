@@ -30,7 +30,7 @@ class Post extends Model {
 
   public addHashTags!: BelongsToManyAddAssociationsMixin<HashTag, number>;
   public addHashTag!: BelongsToManyAddAssociationMixin<HashTag, number>;
-  public removeHashTags!: BelongsToManyRemoveAssociationsMixin<HashTag, string>;
+  public removeHashTags!: BelongsToManyRemoveAssociationsMixin<HashTag, number>;
   public getHashTags!: BelongsToManyGetAssociationsMixin<HashTag>;
 
   public addLiker!: BelongsToManyAddAssociationMixin<User, number>;

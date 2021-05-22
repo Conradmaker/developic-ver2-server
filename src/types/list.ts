@@ -23,6 +23,16 @@ export type GetPostListHandler = RequestHandler<
     term: 'month' | 'day';
   }
 >;
+export type GetHashTaggedPostHandler = RequestHandler<
+  { HashTagId: number },
+  unknown,
+  unknown,
+  {
+    sort: 'popular' | 'recent';
+    limit?: string;
+    offset?: string;
+  }
+>;
 export type GetExhibitionListHandler = RequestHandler<
   unknown,
   unknown,

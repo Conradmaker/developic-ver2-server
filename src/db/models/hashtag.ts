@@ -1,5 +1,13 @@
-import { DataTypes, Model } from 'sequelize';
+import {
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyRemoveAssociationsMixin,
+  DataTypes,
+  Model,
+} from 'sequelize';
 import { DbType } from '.';
+import Post from './post';
 import sequelize from './sequelize';
 
 class HashTag extends Model {
@@ -10,6 +18,11 @@ class HashTag extends Model {
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public addPosts!: BelongsToManyAddAssociationsMixin<Post, number>;
+  public addPost!: BelongsToManyAddAssociationMixin<Post, number>;
+  public removePosts!: BelongsToManyRemoveAssociationsMixin<Post, number>;
+  public getPosts!: BelongsToManyGetAssociationsMixin<Post>;
 }
 
 HashTag.init(

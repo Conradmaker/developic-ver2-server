@@ -2,6 +2,8 @@ import { Op, Sequelize } from 'sequelize';
 import { sequelize } from '../db/models';
 import Exhibition from '../db/models/exhibition';
 import ExhibitionImage from '../db/models/exhibitionImage';
+import HashTag from '../db/models/hashtag';
+import HashTagLog from '../db/models/hashTagLog';
 import Post from '../db/models/post';
 import PostLog from '../db/models/postLog';
 import User from '../db/models/user';
@@ -10,6 +12,7 @@ import {
   GetPostListHandler,
   GetWriterListHandler,
   GetFeedListHandler,
+  GetHashTaggedPostHandler,
 } from '../types/list';
 
 //작가 최근활동 순 조회
@@ -194,6 +197,53 @@ export const getExhibitionList: GetExhibitionListHandler = async (
       ],
     });
     res.status(200).json(list);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//해시태그에 해당하는 게시글목록 조회
+export const getHashTaggedPostController: GetHashTaggedPostHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const sort = req.query.sort === 'popular' ? 'hits' : 'createdAt';
+    const limit = req.query.limit ? parseInt(req.query.limit, 10) : 12;
+    const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0;
+    const tag = await HashTag.findOne({ where: { id: req.params.HashTagId } });
+    if (!tag) return res.status(404).send('해당하는 태그를 찾을 수 없습니다.');
+
+    HashTagLog.create({
+      date: new Date().toLocaleDateString(),
+      score: 1,
+      HashTagId: tag.id,
+    });
+
+    const resultList = await tag.getPosts({
+      where: { state: 1 },
+      limit,
+      offset,
+      order: [[sort, 'DESC']],
+      attributes: [
+        'id',
+        'title',
+        'thumbnail',
+        'summary',
+        'createdAt',
+        'updatedAt',
+      ],
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'nickname', 'avatar', 'introduce'],
+        },
+      ],
+    });
+
+    return res.status(200).json(resultList);
   } catch (e) {
     console.error(e);
     next(e);

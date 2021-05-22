@@ -2,6 +2,7 @@ import { RequestHandler } from 'express';
 import { Op } from 'sequelize';
 import Comment from '../db/models/comment';
 import HashTag from '../db/models/hashtag';
+import HashTagLog from '../db/models/hashTagLog';
 import MetaData from '../db/models/metaData';
 import PhotoBinder from '../db/models/photoBinder';
 import PicStory from '../db/models/picStory';
@@ -21,10 +22,12 @@ import {
 export const addHashTagController: RequestHandler = async (req, res, next) => {
   try {
     const existTag = await HashTag.findOne({ where: { name: req.body.name } });
-    if (existTag)
+    if (existTag) {
       return res.status(200).json({ id: existTag.id, name: existTag.name });
+    }
 
     const newTag = await HashTag.create({ name: req.body.name });
+
     return res.status(200).json({ id: newTag.id, name: newTag.name });
   } catch (e) {
     console.error(e);
@@ -68,9 +71,26 @@ export const preSaveController: RequestHandler = async (req, res, next) => {
         title: req.body.title,
         content: req.body.content,
       });
-      const hashTags = await existPost?.getHashTags();
-      await existPost?.removeHashTags(hashTags);
-      await existPost?.addHashTags(req.body.tagList);
+      const hashTags = await existPost.getHashTags();
+      if (hashTags) {
+        //기존 태그가 있을경우 해당 개시글 태그들을 삭제하고 점수로그도 삭제한다.
+        await existPost.removeHashTags(hashTags);
+        for (let i = 0; i < hashTags.length; i++) {
+          HashTagLog.destroy({
+            where: { HashTagId: hashTags[i].id, score: 2 },
+            limit: 1,
+          });
+        }
+      }
+      //새로운 태그들의 점수로그와 게시글과 연결시킨다.
+      await existPost.addHashTags(req.body.tagList);
+      for (let i = 0; i < req.body.tagList.length; i++) {
+        HashTagLog.create({
+          date: new Date().toLocaleDateString(),
+          score: 2,
+          HashTagId: req.body.tagList[i],
+        });
+      }
       req.body.imageList.map((imageId: number) => {
         PostImage.update({ PostId: postId }, { where: { id: imageId } });
       });
@@ -81,7 +101,18 @@ export const preSaveController: RequestHandler = async (req, res, next) => {
         content: req.body.content,
         UserId: req.body.UserId,
       });
-      await newPost.addHashTags(req.body.tagList);
+      if (req.body.tagList) {
+        //해시태그가 있을 경우 태그로그와 게시글에 태그 추가
+        await newPost.addHashTags(req.body.tagList);
+        for (let i = 0; i < req.body.tagList.length; i++) {
+          HashTagLog.create({
+            date: new Date().toLocaleDateString(),
+            score: 2,
+            HashTagId: req.body.tagList[i],
+          });
+        }
+      }
+
       req.body.imageList.map((imageId: number) => {
         PostImage.update({ PostId: newPost.id }, { where: { id: imageId } });
       });
