@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import PostLog from '../db/models/postLog';
 import User from '../db/models/user';
 import UserIntro from '../db/models/userIntro';
 import {
@@ -191,6 +192,11 @@ export const addLikePostController: ToggleLikePostHandler = async (
     const user = await User.findOne({ where: { id: req.body.UserId } });
     if (!user) return res.status(404).send('다시 로그인 해주세요.');
     await user.addLikedPost(req.body.PostId);
+    PostLog.create({
+      date: new Date().toLocaleDateString(),
+      score: 2,
+      PostId: req.body.PostId,
+    });
     return res.status(200).json(req.body);
   } catch (e) {
     console.error(e);
@@ -208,6 +214,10 @@ export const removeLikePostController: ToggleLikePostHandler = async (
     const user = await User.findOne({ where: { id: req.body.UserId } });
     if (!user) return res.status(404).send('다시 로그인 해주세요.');
     await user.removeLikedPost(req.body.PostId);
+    PostLog.destroy({
+      where: { score: 2, PostId: req.body.PostId },
+      limit: 1,
+    });
     return res.status(200).json(req.body);
   } catch (e) {
     console.error(e);
