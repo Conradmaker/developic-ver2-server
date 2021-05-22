@@ -3,6 +3,7 @@ import { sequelize } from '../db/models';
 import Exhibition from '../db/models/exhibition';
 import ExhibitionImage from '../db/models/exhibitionImage';
 import Post from '../db/models/post';
+import PostLog from '../db/models/postLog';
 import User from '../db/models/user';
 import {
   GetExhibitionListHandler,
@@ -40,7 +41,8 @@ from (select *
             order by P.createdAt DESC
             LIMIT 18446744073709551615) P2
       group by UserId) P3
-         join USER U on P3.UserId = U.id;
+         join USER U on P3.UserId = U.id
+      limit 15;
 `;
     const list = await sequelize.query(query, {
       replacements: type === 'suber' ? { loginUserId } : {},
@@ -96,25 +98,74 @@ export const getPostList: GetPostListHandler = async (req, res, next) => {
     const limit = req.query.limit ? parseInt(req.query.limit, 10) : 12;
     const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0;
     const sort = req.query.sort || 'recent';
+    const term = () => {
+      switch (req.query.term) {
+        case 'day':
+          return 24;
+        case 'month':
+          return 24 * 30;
+        default:
+          return 24;
+      }
+    };
     let list;
     if (sort === 'recent') {
       list = await Post.findAll({
         limit,
         offset,
-        where: {},
-        attributes: [],
-        include: [{ model: User, attributes: [] }],
+        where: { state: 1 },
+        attributes: [
+          'id',
+          'title',
+          'thumbnail',
+          'summary',
+          'createdAt',
+          'updatedAt',
+        ],
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'nickname', 'avatar', 'introduce'],
+          },
+        ],
         order: [['createdAt', 'DESC']],
       });
     } else if (sort === 'popular') {
-      list = await Post.findAll({
-        limit,
-        offset,
-        where: {},
-        attributes: [],
-        include: [{ model: User, attributes: [] }],
-        // order: [['createdAt', 'DESC']],
+      const popularList = await PostLog.findAll({
+        where: {
+          createdAt: {
+            [Op.lt]: new Date(),
+            [Op.gt]: new Date(
+              new Date().setHours(new Date().getHours() - term())
+            ),
+          },
+        },
+        attributes: [[Sequelize.literal('SUM(score)'), 'score'], 'PostId'],
+        include: [
+          {
+            model: Post,
+            attributes: [
+              'id',
+              'title',
+              'thumbnail',
+              'summary',
+              'createdAt',
+              'updatedAt',
+            ],
+            where: { state: 1 },
+            include: [
+              {
+                model: User,
+                attributes: ['id', 'nickname', 'avatar', 'introduce'],
+              },
+            ],
+          },
+        ],
+        group: ['PostId'],
+        order: [[Sequelize.literal('score'), 'DESC']],
       });
+
+      list = popularList.map(popItem => popItem.Post);
     }
 
     res.status(200).json(list);

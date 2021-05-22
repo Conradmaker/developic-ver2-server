@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { DbType } from '.';
+import Post from './post';
 import sequelize from './sequelize';
 
 class PostLog extends Model {
@@ -10,6 +11,8 @@ class PostLog extends Model {
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public Post?: Post;
 }
 
 PostLog.init(
