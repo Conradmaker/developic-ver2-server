@@ -13,6 +13,7 @@ import {
   GetWriterListHandler,
   GetFeedListHandler,
   GetHashTaggedPostHandler,
+  GetHashTagListHandler,
 } from '../types/list';
 
 //작가 최근활동 순 조회
@@ -244,6 +245,55 @@ export const getHashTaggedPostController: GetHashTaggedPostHandler = async (
     });
 
     return res.status(200).json(resultList);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+export const getHashTagList: GetHashTagListHandler = async (req, res, next) => {
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit, 10) : 12;
+    const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0;
+    const sort = req.query.sort || 'recent';
+    const term = () => {
+      switch (req.query.term) {
+        case 'day':
+          return 24;
+        case 'month':
+          return 24 * 30;
+        default:
+          return 24;
+      }
+    };
+    console.log(limit, offset, sort, term());
+    let list;
+    if (sort === 'recent') {
+      list = await HashTag.findAll({
+        limit,
+        offset,
+        attributes: ['id', 'name', 'hits'],
+        order: [['createdAt', 'DESC']],
+      });
+    } else if (sort === 'popular') {
+      const popList = await HashTagLog.findAll({
+        where: {
+          createdAt: {
+            [Op.lt]: new Date(),
+            [Op.gt]: new Date(
+              new Date().setHours(new Date().getHours() - term())
+            ),
+          },
+        },
+        attributes: [[Sequelize.literal('SUM(score)'), 'score'], 'HashTagId'],
+        include: [{ model: HashTag, attributes: ['id', 'name', 'hits'] }],
+        group: ['HashTagId'],
+        order: [[Sequelize.literal('score'), 'DESC']],
+      });
+      list = popList.map(popItem => popItem.HashTag);
+    }
+
+    return res.status(200).json(list);
   } catch (e) {
     console.error(e);
     next(e);

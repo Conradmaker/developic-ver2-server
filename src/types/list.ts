@@ -33,6 +33,17 @@ export type GetHashTaggedPostHandler = RequestHandler<
     offset?: string;
   }
 >;
+export type GetHashTagListHandler = RequestHandler<
+  unknown,
+  unknown,
+  unknown,
+  {
+    sort: 'popular' | 'recent';
+    limit?: string;
+    offset?: string;
+    term: 'month' | 'day';
+  }
+>;
 export type GetExhibitionListHandler = RequestHandler<
   unknown,
   unknown,

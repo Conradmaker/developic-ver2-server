@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { DbType } from '.';
+import HashTag from './hashtag';
 import sequelize from './sequelize';
 
 class HashTagLog extends Model {
@@ -10,6 +11,8 @@ class HashTagLog extends Model {
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public HashTag?: HashTag;
 }
 
 HashTagLog.init(
