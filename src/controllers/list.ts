@@ -340,6 +340,20 @@ export const getSearchedListController: GetSearchedListHandler = async (
               },
             ],
           },
+          attributes: [
+            'id',
+            'title',
+            'thumbnail',
+            'summary',
+            'createdAt',
+            'updatedAt',
+          ],
+          include: [
+            {
+              model: User,
+              attributes: ['id', 'nickname', 'avatar', 'introduce'],
+            },
+          ],
           order: [['createdAt', 'DESC']],
           limit,
           offset,
@@ -405,6 +419,7 @@ export const getSearchedListController: GetSearchedListHandler = async (
               },
             ],
           },
+          attributes: ['id', 'nickname', 'avatar', 'introduce'],
           order: [['createdAt', 'DESC']],
           limit,
           offset,
@@ -448,7 +463,9 @@ export const getSearchedListController: GetSearchedListHandler = async (
           group: ['UserId'],
           order: [[Sequelize.literal('score'), 'DESC']],
         });
-        resultList = popWriterList;
+        resultList = popWriterList.map(result =>
+          result.Post ? result.Post.User : []
+        );
       }
     }
     return res.status(200).json(resultList);

@@ -40,6 +40,8 @@ class Post extends Model {
   public likeCount?: number;
   public likers?: User[];
   public PicStories?: PicStory[];
+
+  public User?: User;
 }
 
 Post.init(
