@@ -50,3 +50,16 @@ export type GetExhibitionListHandler = RequestHandler<
   unknown,
   { limit?: string; offset?: string }
 >;
+
+export type GetSearchedListHandler = RequestHandler<
+  unknown,
+  unknown,
+  unknown,
+  {
+    keyword: string;
+    type: 'picstory' | 'post' | 'writer';
+    sort?: 'recent' | 'popular';
+    limit?: string;
+    offset?: string;
+  }
+>;

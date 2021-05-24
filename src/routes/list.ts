@@ -5,6 +5,7 @@ import {
   getHashTaggedPostController,
   getHashTagList,
   getPostList,
+  getSearchedListController,
   getWriterList,
 } from '../controllers/list';
 
@@ -16,5 +17,6 @@ listRouter.get('/post', getPostList);
 listRouter.get('/tag', getHashTagList);
 listRouter.get('/post/tag/:HashTagId', getHashTaggedPostController);
 listRouter.get('/exhibition', getExhibitionList);
+listRouter.get('/search', getSearchedListController);
 
 export default listRouter;

@@ -56,10 +56,11 @@ authRouter.get('/google/callback', googleLoginController);
 
 //NOTE: 소셜로그인 인증
 authRouter.post('/retest', socialLoginRetest);
-export default authRouter;
 
 //NOTE: 로그인 인증
 authRouter.get('/', authController);
 
 //NOTE: 로그아웃
 authRouter.get('/logout', logoutController);
+
+export default authRouter;

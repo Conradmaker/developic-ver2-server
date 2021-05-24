@@ -4,6 +4,7 @@ import Exhibition from '../db/models/exhibition';
 import ExhibitionImage from '../db/models/exhibitionImage';
 import HashTag from '../db/models/hashtag';
 import HashTagLog from '../db/models/hashTagLog';
+import PicStory from '../db/models/picStory';
 import Post from '../db/models/post';
 import PostLog from '../db/models/postLog';
 import User from '../db/models/user';
@@ -14,6 +15,7 @@ import {
   GetFeedListHandler,
   GetHashTaggedPostHandler,
   GetHashTagListHandler,
+  GetSearchedListHandler,
 } from '../types/list';
 
 //작가 최근활동 순 조회
@@ -266,7 +268,6 @@ export const getHashTagList: GetHashTagListHandler = async (req, res, next) => {
           return 24;
       }
     };
-    console.log(limit, offset, sort, term());
     let list;
     if (sort === 'recent') {
       list = await HashTag.findAll({
@@ -294,6 +295,163 @@ export const getHashTagList: GetHashTagListHandler = async (req, res, next) => {
     }
 
     return res.status(200).json(list);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//검색
+export const getSearchedListController: GetSearchedListHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const keyword = req.query.keyword;
+    const type = req.query.type;
+    const sort = req.query.sort ? req.query.sort : 'recent';
+    const limit = req.query.limit ? parseInt(req.query.limit, 10) : 12;
+    const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0;
+    let resultList;
+    if (type === 'picstory') {
+      resultList = await PicStory.findAll({
+        where: {
+          [Op.or]: [
+            { title: { [Op.like]: `%${keyword}%` } },
+            { description: { [Op.like]: `%${keyword}%` } },
+          ],
+        },
+        order: [['createdAt', 'DESC']],
+        limit,
+        offset,
+      });
+    } else if (type === 'post') {
+      if (sort === 'recent') {
+        resultList = await Post.findAll({
+          where: {
+            [Op.and]: [
+              { state: 1 },
+              {
+                [Op.or]: [
+                  { title: { [Op.like]: `%${keyword}%` } },
+                  { content: { [Op.like]: `%${keyword}%` } },
+                ],
+              },
+            ],
+          },
+          order: [['createdAt', 'DESC']],
+          limit,
+          offset,
+        });
+      } else {
+        const popularList = await PostLog.findAll({
+          where: {
+            createdAt: {
+              [Op.lt]: new Date(),
+              [Op.gt]: new Date(
+                new Date().setHours(new Date().getHours() - 24 * 30)
+              ),
+            },
+          },
+          attributes: [[Sequelize.literal('SUM(score)'), 'score'], 'PostId'],
+          include: [
+            {
+              model: Post,
+              attributes: [
+                'id',
+                'title',
+                'thumbnail',
+                'summary',
+                'createdAt',
+                'updatedAt',
+              ],
+              where: {
+                [Op.and]: [
+                  { state: 1 },
+                  {
+                    [Op.or]: [
+                      { title: { [Op.like]: `%${keyword}%` } },
+                      { content: { [Op.like]: `%${keyword}%` } },
+                    ],
+                  },
+                ],
+              },
+              include: [
+                {
+                  model: User,
+                  attributes: ['id', 'nickname', 'avatar', 'introduce'],
+                },
+              ],
+            },
+          ],
+          group: ['PostId'],
+          order: [[Sequelize.literal('score'), 'DESC']],
+        });
+
+        resultList = popularList.map(popItem => popItem.Post);
+      }
+    } else if (type === 'writer') {
+      if (sort === 'recent') {
+        resultList = await User.findAll({
+          where: {
+            [Op.and]: [
+              { verificationCode: 1 },
+              {
+                [Op.or]: [
+                  { introduce: { [Op.like]: `%${keyword}%` } },
+                  { nickname: { [Op.like]: `%${keyword}%` } },
+                ],
+              },
+            ],
+          },
+          order: [['createdAt', 'DESC']],
+          limit,
+          offset,
+        });
+      } else {
+        const popWriterList = await PostLog.findAll({
+          where: {
+            createdAt: {
+              [Op.lt]: new Date(),
+              [Op.gt]: new Date(
+                new Date().setHours(new Date().getHours() - 24 * 31)
+              ),
+            },
+          },
+          limit,
+          offset,
+          attributes: [[Sequelize.literal('SUM(score)'), 'score']],
+          include: [
+            {
+              model: Post,
+              attributes: ['UserId'],
+              include: [
+                {
+                  model: User,
+                  where: {
+                    [Op.and]: [
+                      { verificationCode: 1 },
+                      {
+                        [Op.or]: [
+                          { introduce: { [Op.like]: `%${keyword}%` } },
+                          { nickname: { [Op.like]: `%${keyword}%` } },
+                        ],
+                      },
+                    ],
+                  },
+                  attributes: ['id', 'nickname', 'avatar', 'introduce'],
+                },
+              ],
+            },
+          ],
+          group: ['UserId'],
+          order: [[Sequelize.literal('score'), 'DESC']],
+        });
+        resultList = popWriterList;
+      }
+    }
+    return res.status(200).json(resultList);
   } catch (e) {
     console.error(e);
     next(e);
