@@ -187,17 +187,14 @@ export const getExhibitionList: GetExhibitionListHandler = async (
   next
 ) => {
   try {
-    const limit = req.query.limit ? parseInt(req.query.limit, 10) : 12;
+    const limit = req.query.limit ? parseInt(req.query.limit, 10) : 5;
     const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0;
     const list = await Exhibition.findAll({
       limit,
       offset,
-      where: {},
-      attributes: [],
-      include: [
-        { model: ExhibitionImage, attributes: [] },
-        { model: User, attributes: [] },
-      ],
+      where: { isAllow: 1 },
+      attributes: ['id', 'poster', 'cost', 'title', 'startDate', 'endDate'],
+      include: [{ model: User, attributes: ['id', 'email', 'name', 'avatar'] }],
     });
     res.status(200).json(list);
   } catch (e) {
