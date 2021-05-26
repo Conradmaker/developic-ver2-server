@@ -31,6 +31,7 @@ export type GetHashTaggedPostHandler = RequestHandler<
     sort: 'popular' | 'recent';
     limit?: string;
     offset?: string;
+    HashtagName?: string;
   }
 >;
 export type GetHashTagListHandler = RequestHandler<

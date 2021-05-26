@@ -127,12 +127,14 @@ export const getPostList: GetPostListHandler = async (req, res, next) => {
           'summary',
           'createdAt',
           'updatedAt',
+          'hits',
         ],
         include: [
           {
             model: User,
             attributes: ['id', 'nickname', 'avatar', 'introduce'],
           },
+          { model: User, as: 'likers', attributes: ['id'] },
         ],
         order: [['createdAt', 'DESC']],
       });
@@ -157,6 +159,7 @@ export const getPostList: GetPostListHandler = async (req, res, next) => {
               'summary',
               'createdAt',
               'updatedAt',
+              'hits',
             ],
             where: { state: 1 },
             include: [
@@ -164,6 +167,7 @@ export const getPostList: GetPostListHandler = async (req, res, next) => {
                 model: User,
                 attributes: ['id', 'nickname', 'avatar', 'introduce'],
               },
+              { model: User, as: 'likers', attributes: ['id'] },
             ],
           },
         ],
@@ -213,7 +217,10 @@ export const getHashTaggedPostController: GetHashTaggedPostHandler = async (
     const sort = req.query.sort === 'popular' ? 'hits' : 'createdAt';
     const limit = req.query.limit ? parseInt(req.query.limit, 10) : 12;
     const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0;
-    const tag = await HashTag.findOne({ where: { id: req.params.HashTagId } });
+    const tagOption = req.query.HashtagName
+      ? { name: req.query.HashtagName }
+      : { id: req.params.HashTagId };
+    const tag = await HashTag.findOne({ where: tagOption });
     if (!tag) return res.status(404).send('해당하는 태그를 찾을 수 없습니다.');
 
     HashTagLog.create({
@@ -234,12 +241,14 @@ export const getHashTaggedPostController: GetHashTaggedPostHandler = async (
         'summary',
         'createdAt',
         'updatedAt',
+        'hits',
       ],
       include: [
         {
           model: User,
           attributes: ['id', 'nickname', 'avatar', 'introduce'],
         },
+        { model: User, as: 'likers', attributes: ['id'] },
       ],
     });
 
@@ -344,12 +353,14 @@ export const getSearchedListController: GetSearchedListHandler = async (
             'summary',
             'createdAt',
             'updatedAt',
+            'hits',
           ],
           include: [
             {
               model: User,
               attributes: ['id', 'nickname', 'avatar', 'introduce'],
             },
+            { model: User, as: 'likers', attributes: ['id'] },
           ],
           order: [['createdAt', 'DESC']],
           limit,
@@ -376,6 +387,7 @@ export const getSearchedListController: GetSearchedListHandler = async (
                 'summary',
                 'createdAt',
                 'updatedAt',
+                'hits',
               ],
               where: {
                 [Op.and]: [
@@ -393,6 +405,7 @@ export const getSearchedListController: GetSearchedListHandler = async (
                   model: User,
                   attributes: ['id', 'nickname', 'avatar', 'introduce'],
                 },
+                { model: User, as: 'likers', attributes: ['id'] },
               ],
             },
           ],
