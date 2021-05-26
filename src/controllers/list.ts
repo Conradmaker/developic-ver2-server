@@ -197,8 +197,17 @@ export const getExhibitionList: GetExhibitionListHandler = async (
       limit,
       offset,
       where: { isAllow: 1 },
-      attributes: ['id', 'poster', 'cost', 'title', 'startDate', 'endDate'],
+      attributes: [
+        'id',
+        'poster',
+        'cost',
+        'title',
+        'author',
+        'startDate',
+        'endDate',
+      ],
       include: [{ model: User, attributes: ['id', 'email', 'name', 'avatar'] }],
+      order: [['createdAt', 'DESC']],
     });
     res.status(200).json(list);
   } catch (e) {
