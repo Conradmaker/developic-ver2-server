@@ -1,7 +1,7 @@
 import cryptoRandomString from 'crypto-random-string';
 import bcrypt from 'bcrypt';
 import { transporter } from '../routes/auth';
-import { mailTemplate } from '../utils/makeMail';
+import { verificationMailTemplate } from '../utils/makeMail';
 import User from '../db/models/user';
 import { RequestHandler } from 'express';
 import passport from 'passport';
@@ -20,7 +20,11 @@ export const signUpController: RequestHandler = async (req, res, next) => {
       to: req.body.email,
       subject: 'DEVELOPIC 회원가입 인증번호',
       text: '안녕하세요!!',
-      html: mailTemplate(req.body.name, randomNumber, req.body.email),
+      html: verificationMailTemplate(
+        req.body.name,
+        randomNumber,
+        req.body.email
+      ),
     });
     const hashedPassword = await bcrypt.hash(req.body.password, 11);
     const user = await User.create({

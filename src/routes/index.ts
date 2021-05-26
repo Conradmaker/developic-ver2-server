@@ -8,6 +8,7 @@ import blogRouter from './blog';
 import userRouter from './user';
 import drawerRouter from './drawer';
 import exhibitionRouter from './exhibition';
+import csRouter from './cs';
 
 const router = express.Router();
 
@@ -20,4 +21,5 @@ router.use('/blog', blogRouter);
 router.use('/user', userRouter);
 router.use('/drawer', drawerRouter);
 router.use('/exhibition', exhibitionRouter);
+router.use('/cs', csRouter);
 export default router;

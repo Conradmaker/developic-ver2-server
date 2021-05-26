@@ -1,4 +1,4 @@
-export const mailTemplate = (
+export const verificationMailTemplate = (
   name: string,
   randomNumber: string,
   email: string
@@ -397,3 +397,24 @@ by cozi</div>
 </div>
 <div style="line-height:40px;font-size:40px;" id="footer-spacing">&nbsp;</div>
 </td></tr></tbody></table>`;
+export const makeInqueryMail = ({
+  contact,
+  content,
+  email,
+  type,
+}: {
+  [key: string]: string;
+}): string => {
+  return `
+  <div>
+    <h1>[문의가 들어왔어요!]<h1>
+    <ul>
+      <li>문의유형: ${type}</li>
+      <li>이메일: ${email}</li>
+      <li>연락처: ${contact}</li>
+    </ul>
+    <p>${content}</p>
+    <span></span>
+  </div>
+    `;
+};

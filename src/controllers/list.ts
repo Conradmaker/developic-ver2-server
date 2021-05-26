@@ -173,6 +173,8 @@ export const getPostList: GetPostListHandler = async (req, res, next) => {
         ],
         group: ['PostId'],
         order: [[Sequelize.literal('score'), 'DESC']],
+        limit,
+        offset,
       });
 
       list = popularList.map(popItem => popItem.Post);
