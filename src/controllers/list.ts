@@ -17,7 +17,7 @@ import {
   GetSearchedListHandler,
 } from '../types/list';
 
-//작가 최근활동 순 조회
+//NOTE: 작가 최근활동 순 조회
 export const getWriterList: GetWriterListHandler = async (req, res, next) => {
   try {
     const limit = req.query.limit ? +req.query.limit : 12;
@@ -63,7 +63,7 @@ from (select *
   }
 };
 
-//피드 불러오기
+//NOTE: 피드목록 조회
 export const getFeedList: GetFeedListHandler = async (req, res, next) => {
   try {
     const limit = req.query.limit ? +req.query.limit : 12;
@@ -90,7 +90,12 @@ export const getFeedList: GetFeedListHandler = async (req, res, next) => {
       ],
       include: [
         { model: User, attributes: ['id', 'nickname', 'avatar', 'introduce'] },
-        { model: User, as: 'likers', attributes: ['id'] },
+        {
+          model: User,
+          as: 'likers',
+          attributes: ['id'],
+          through: { attributes: [] },
+        },
       ],
       order: [['createdAt', 'DESC']],
     });
@@ -101,6 +106,7 @@ export const getFeedList: GetFeedListHandler = async (req, res, next) => {
   }
 };
 
+//NOTE: 게시글 리스트 조회
 export const getPostList: GetPostListHandler = async (req, res, next) => {
   try {
     const limit = req.query.limit ? parseInt(req.query.limit, 10) : 12;
@@ -136,7 +142,12 @@ export const getPostList: GetPostListHandler = async (req, res, next) => {
             model: User,
             attributes: ['id', 'nickname', 'avatar', 'introduce'],
           },
-          { model: User, as: 'likers', attributes: ['id'] },
+          {
+            model: User,
+            as: 'likers',
+            attributes: ['id'],
+            through: { attributes: [] },
+          },
         ],
         order: [['createdAt', 'DESC']],
       });
@@ -170,7 +181,12 @@ export const getPostList: GetPostListHandler = async (req, res, next) => {
                 model: User,
                 attributes: ['id', 'nickname', 'avatar', 'introduce'],
               },
-              { model: User, as: 'likers', attributes: ['id'] },
+              {
+                model: User,
+                as: 'likers',
+                attributes: ['id'],
+                through: { attributes: [] },
+              },
             ],
           },
         ],
@@ -190,6 +206,7 @@ export const getPostList: GetPostListHandler = async (req, res, next) => {
   }
 };
 
+//NOTE: 전시회 목록 조회
 export const getExhibitionList: GetExhibitionListHandler = async (
   req,
   res,
@@ -221,7 +238,7 @@ export const getExhibitionList: GetExhibitionListHandler = async (
   }
 };
 
-//해시태그에 해당하는 게시글목록 조회
+//NOTE: 해시태그에 해당하는 게시글목록 조회
 export const getHashTaggedPostController: GetHashTaggedPostHandler = async (
   req,
   res,
@@ -262,7 +279,12 @@ export const getHashTaggedPostController: GetHashTaggedPostHandler = async (
           model: User,
           attributes: ['id', 'nickname', 'avatar', 'introduce'],
         },
-        { model: User, as: 'likers', attributes: ['id'] },
+        {
+          model: User,
+          as: 'likers',
+          attributes: ['id'],
+          through: { attributes: [] },
+        },
       ],
     });
 
@@ -273,6 +295,7 @@ export const getHashTaggedPostController: GetHashTaggedPostHandler = async (
   }
 };
 
+//NOTE: 해시태그 리스트 조회
 export const getHashTagList: GetHashTagListHandler = async (req, res, next) => {
   try {
     const limit = req.query.limit ? parseInt(req.query.limit, 10) : 12;
@@ -321,7 +344,7 @@ export const getHashTagList: GetHashTagListHandler = async (req, res, next) => {
   }
 };
 
-//검색
+//NOTE: 검색
 export const getSearchedListController: GetSearchedListHandler = async (
   req,
   res,
@@ -335,6 +358,7 @@ export const getSearchedListController: GetSearchedListHandler = async (
     const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0;
     let resultList;
     if (type === 'picstory') {
+      //NOTE: 픽스토리 검색
       resultList = await PicStory.findAll({
         where: {
           [Op.or]: [
@@ -364,14 +388,25 @@ export const getSearchedListController: GetSearchedListHandler = async (
               'updatedAt',
               'createdAt',
             ],
-            include: [{ model: User, as: 'likers', attributes: ['id'] }],
+            through: { attributes: [] },
+            include: [
+              {
+                model: User,
+                as: 'likers',
+                attributes: ['id'],
+                through: { attributes: [] },
+              },
+            ],
           },
         ],
         order: [['createdAt', 'DESC']],
         limit,
         offset,
       });
+
+      return res.status(200).json(resultList);
     } else if (type === 'post') {
+      //NOTE: 게시글 검색
       if (sort === 'recent') {
         resultList = await Post.findAll({
           where: {
@@ -399,12 +434,19 @@ export const getSearchedListController: GetSearchedListHandler = async (
               model: User,
               attributes: ['id', 'nickname', 'avatar', 'introduce'],
             },
-            { model: User, as: 'likers', attributes: ['id'] },
+            {
+              model: User,
+              as: 'likers',
+              attributes: ['id'],
+              through: { attributes: [] },
+            },
           ],
           order: [['createdAt', 'DESC']],
           limit,
           offset,
         });
+
+        return res.status(200).json(resultList);
       } else {
         const popularList = await PostLog.findAll({
           where: {
@@ -419,15 +461,7 @@ export const getSearchedListController: GetSearchedListHandler = async (
           include: [
             {
               model: Post,
-              attributes: [
-                'id',
-                'title',
-                'thumbnail',
-                'summary',
-                'createdAt',
-                'updatedAt',
-                'hits',
-              ],
+              attributes: ['id'],
               where: {
                 [Op.and]: [
                   { state: 1 },
@@ -439,22 +473,47 @@ export const getSearchedListController: GetSearchedListHandler = async (
                   },
                 ],
               },
-              include: [
-                {
-                  model: User,
-                  attributes: ['id', 'nickname', 'avatar', 'introduce'],
-                },
-                { model: User, as: 'likers', attributes: ['id'] },
-              ],
             },
           ],
           group: ['PostId'],
           order: [[Sequelize.literal('score'), 'DESC']],
         });
 
-        resultList = popularList.map(popItem => popItem.Post);
+        resultList = [];
+
+        for (let i = 0; i < popularList.length; i++) {
+          resultList.push(
+            await Post.findOne({
+              where: { id: popularList[i].PostId },
+              attributes: [
+                'id',
+                'title',
+                'thumbnail',
+                'summary',
+                'createdAt',
+                'updatedAt',
+                'hits',
+                'UserId',
+              ],
+              include: [
+                {
+                  model: User,
+                  attributes: ['id', 'nickname', 'avatar', 'introduce'],
+                },
+                {
+                  model: User,
+                  as: 'likers',
+                  attributes: ['id'],
+                  through: { attributes: [] },
+                },
+              ],
+            })
+          );
+        }
+        return res.status(200).json(resultList);
       }
     } else if (type === 'writer') {
+      //NOTE: 작가 검색
       if (sort === 'recent') {
         resultList = await User.findAll({
           where: {
@@ -470,14 +529,31 @@ export const getSearchedListController: GetSearchedListHandler = async (
           },
           attributes: ['id', 'nickname', 'avatar', 'introduce', 'createdAt'],
           include: [
-            { model: User, as: 'subscribers', attributes: ['id'] },
-            { model: User, as: 'writers', attributes: ['id'] },
-            { model: Post, attributes: ['id', 'thumbnail'] },
+            {
+              model: User,
+              as: 'subscribers',
+              attributes: ['id'],
+              through: { attributes: [] },
+            },
+            {
+              model: User,
+              as: 'writers',
+              attributes: ['id'],
+              through: { attributes: [] },
+            },
+            {
+              model: Post,
+              attributes: ['id', 'thumbnail'],
+              where: { state: 1 },
+              limit: 3,
+            },
           ],
           order: [['createdAt', 'DESC']],
           limit,
           offset,
         });
+
+        return res.status(200).json(resultList);
       } else {
         const popWriterList = await PostLog.findAll({
           where: {
@@ -509,7 +585,7 @@ export const getSearchedListController: GetSearchedListHandler = async (
                       },
                     ],
                   },
-                  attributes: ['id', 'nickname', 'avatar', 'introduce'],
+                  attributes: ['id'],
                 },
               ],
             },
@@ -517,12 +593,51 @@ export const getSearchedListController: GetSearchedListHandler = async (
           group: ['UserId'],
           order: [[Sequelize.literal('score'), 'DESC']],
         });
-        resultList = popWriterList.map(result =>
-          result.Post ? result.Post.User : []
-        );
+
+        resultList = [];
+
+        for (let i = 0; i < popWriterList.length; i++) {
+          resultList.push(
+            popWriterList[i].Post
+              ? await User.findOne({
+                  where: {
+                    id: ((popWriterList[i].Post as Post).User as User).id,
+                  },
+                  attributes: [
+                    'id',
+                    'nickname',
+                    'avatar',
+                    'introduce',
+                    'createdAt',
+                  ],
+                  include: [
+                    {
+                      model: User,
+                      as: 'subscribers',
+                      attributes: ['id'],
+                      through: { attributes: [] },
+                    },
+                    {
+                      model: User,
+                      as: 'writers',
+                      attributes: ['id'],
+                      through: { attributes: [] },
+                    },
+                    {
+                      model: Post,
+                      attributes: ['id', 'thumbnail'],
+                      where: { state: 1 },
+                      limit: 3,
+                    },
+                  ],
+                })
+              : []
+          );
+        }
+        return res.status(200).json(resultList);
       }
     }
-    return res.status(200).json(resultList);
+    return res.status(404).send('type을 입력해주세요.');
   } catch (e) {
     console.error(e);
     next(e);

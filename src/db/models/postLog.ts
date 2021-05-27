@@ -8,6 +8,7 @@ class PostLog extends Model {
 
   public date!: string;
   public score!: 1 | 2;
+  public PostId!: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
