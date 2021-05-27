@@ -1,7 +1,6 @@
 import { Op, Sequelize } from 'sequelize';
 import { sequelize } from '../db/models';
 import Exhibition from '../db/models/exhibition';
-import ExhibitionImage from '../db/models/exhibitionImage';
 import HashTag from '../db/models/hashtag';
 import HashTagLog from '../db/models/hashTagLog';
 import PicStory from '../db/models/picStory';
@@ -21,6 +20,7 @@ import {
 //작가 최근활동 순 조회
 export const getWriterList: GetWriterListHandler = async (req, res, next) => {
   try {
+    const limit = req.query.limit ? +req.query.limit : 12;
     const type: 'suber' | 'all' = req.query.type;
     const loginUserId = req.query.userId ? +req.query.userId : null;
     const query =
@@ -36,7 +36,8 @@ export const getWriterList: GetWriterListHandler = async (req, res, next) => {
               order by P.createdAt DESC
               LIMIT 18446744073709551615) P2
         group by UserId) P3
-           join USER U on P3.UserId = U.id;
+           join USER U on P3.UserId = U.id
+           limit :limit;
 `
         : `
 select id, nickname, email, introduce, avatar, P3.createdAt as 'last_post'
@@ -48,12 +49,13 @@ from (select *
             LIMIT 18446744073709551615) P2
       group by UserId) P3
          join USER U on P3.UserId = U.id
-      limit 15;
+      limit :limit;
 `;
     const list = await sequelize.query(query, {
-      replacements: type === 'suber' ? { loginUserId } : {},
+      replacements: type === 'suber' ? { loginUserId, limit } : { limit },
       raw: true,
     });
+
     res.status(200).send(list[0]);
   } catch (e) {
     console.error(e);
@@ -159,6 +161,7 @@ export const getPostList: GetPostListHandler = async (req, res, next) => {
               'summary',
               'createdAt',
               'updatedAt',
+              'UserId',
               'hits',
             ],
             where: { state: 1 },
