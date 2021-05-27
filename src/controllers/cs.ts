@@ -62,6 +62,7 @@ export const getNoticeListController: GetNoticeListHandler = async (
     const list = await Notice.findAll({
       limit,
       offset,
+      include: [{ model: Admin, attributes: { exclude: ['password'] } }],
       order: [['createdAt', 'DESC']],
     });
     if (!list) return res.status(404).send('알수없는 오류가 발생하였습니다.');
