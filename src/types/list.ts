@@ -62,5 +62,6 @@ export type GetSearchedListHandler = RequestHandler<
     sort?: 'recent' | 'popular';
     limit?: string;
     offset?: string;
+    term?: 'all' | 'year' | 'month' | 'week' | 'day';
   }
 >;

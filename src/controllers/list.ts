@@ -16,6 +16,7 @@ import {
   GetHashTagListHandler,
   GetSearchedListHandler,
 } from '../types/list';
+import { calcTerm } from '../utils/calcTerm';
 
 //NOTE: 작가 최근활동 순 조회
 export const getWriterList: GetWriterListHandler = async (req, res, next) => {
@@ -356,6 +357,7 @@ export const getSearchedListController: GetSearchedListHandler = async (
     const sort = req.query.sort ? req.query.sort : 'recent';
     const limit = req.query.limit ? parseInt(req.query.limit, 10) : 12;
     const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0;
+    const term = req.query.term ? req.query.term : 'month';
     let resultList;
     if (type === 'picstory') {
       //NOTE: 픽스토리 검색
@@ -449,14 +451,7 @@ export const getSearchedListController: GetSearchedListHandler = async (
         return res.status(200).json(resultList);
       } else {
         const popularList = await PostLog.findAll({
-          where: {
-            createdAt: {
-              [Op.lt]: new Date(),
-              [Op.gt]: new Date(
-                new Date().setHours(new Date().getHours() - 24 * 30)
-              ),
-            },
-          },
+          where: calcTerm(term),
           attributes: [[Sequelize.literal('SUM(score)'), 'score'], 'PostId'],
           include: [
             {
@@ -545,7 +540,6 @@ export const getSearchedListController: GetSearchedListHandler = async (
               model: Post,
               attributes: ['id', 'thumbnail'],
               where: { state: 1 },
-              limit: 3,
             },
           ],
           order: [['createdAt', 'DESC']],
@@ -556,14 +550,7 @@ export const getSearchedListController: GetSearchedListHandler = async (
         return res.status(200).json(resultList);
       } else {
         const popWriterList = await PostLog.findAll({
-          where: {
-            createdAt: {
-              [Op.lt]: new Date(),
-              [Op.gt]: new Date(
-                new Date().setHours(new Date().getHours() - 24 * 31)
-              ),
-            },
-          },
+          where: calcTerm(term),
           limit,
           offset,
           attributes: [[Sequelize.literal('SUM(score)'), 'score']],
@@ -627,7 +614,6 @@ export const getSearchedListController: GetSearchedListHandler = async (
                       model: Post,
                       attributes: ['id', 'thumbnail'],
                       where: { state: 1 },
-                      limit: 3,
                     },
                   ],
                 })
