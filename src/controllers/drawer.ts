@@ -25,6 +25,8 @@ export const getLikesListController: GetLikesListHandler = async (
   next
 ) => {
   try {
+    const limit = req.query.limit ? +req.query.limit : 12;
+    const offset = req.query.offset ? +req.query.offset : 0;
     const user = await User.findOne({ where: { id: req.params.UserId } });
     if (!user) return res.status(404).send('해당 유저를 찾을 수 없습니다.');
     const likes = await user.getLikedPosts({
@@ -38,6 +40,8 @@ export const getLikesListController: GetLikesListHandler = async (
         'createdAt',
         'updatedAt',
       ],
+      limit,
+      offset,
     });
     res.status(200).json(likes);
   } catch (e) {
@@ -69,9 +73,13 @@ export const getTempListController: GetTempListHandler = async (
   next
 ) => {
   try {
+    const limit = req.query.limit ? +req.query.limit : 12;
+    const offset = req.query.offset ? +req.query.offset : 0;
     const postList = await Post.findAll({
       where: { UserId: req.params.UserId, state: 0 },
       attributes: ['id', 'content', 'title', 'createdAt', 'updatedAt'],
+      limit,
+      offset,
     });
     if (!postList) return res.status(400).send('알수없는 에러 발생');
     return res.status(200).json(postList);
@@ -103,9 +111,11 @@ export const getRecentViewsController: GetRecentViewsHandler = async (
   next
 ) => {
   try {
+    const limit = req.query.limit ? +req.query.limit : 12;
+    const offset = req.query.offset ? +req.query.offset : 0;
     const recentViews = await RecentView.findAll({
       where: { UserId: req.params.UserId },
-      attributes: ['id', 'date'],
+      attributes: ['id', 'date', 'createdAt'],
       include: [
         {
           model: Post,
@@ -121,6 +131,9 @@ export const getRecentViewsController: GetRecentViewsHandler = async (
           ],
         },
       ],
+      order: ['createdAt'],
+      limit,
+      offset,
     });
     if (!recentViews)
       return res.status(400).send('알수 없는 오류가 발생하였습니다.');
@@ -156,9 +169,13 @@ export const getPhotoBinderListController: GetPhotoBinderListHandler = async (
   next
 ) => {
   try {
+    const limit = req.query.limit ? +req.query.limit : 12;
+    const offset = req.query.offset ? +req.query.offset : 0;
     const list = await PhotoBinder.findAll({
       where: { UserId: req.params.UserId },
       include: [{ model: PostImage, attributes: ['id', 'src'] }],
+      limit,
+      offset,
     });
     return res.status(200).json(list);
   } catch (e) {

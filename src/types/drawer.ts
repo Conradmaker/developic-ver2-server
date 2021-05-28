@@ -5,7 +5,7 @@ export type GetLikesListHandler = RequestHandler<
   { UserId: string },
   unknown | string,
   null,
-  null
+  { limit?: string; offset?: string }
 >;
 export type RemoveLikesItemHandler = RequestHandler<
   { UserId: string },
@@ -17,7 +17,7 @@ export type GetTempListHandler = RequestHandler<
   { UserId: string },
   unknown | string,
   null,
-  null
+  { limit?: string; offset?: string }
 >;
 export type RemoveTempPostHandler = RequestHandler<
   { PostId: string },
@@ -29,7 +29,7 @@ export type GetRecentViewsHandler = RequestHandler<
   { UserId: string },
   unknown | string,
   null,
-  null
+  { limit?: string; offset?: string }
 >;
 export type RemoveRecentViewHandler = RequestHandler<
   { RecentId: string },
@@ -41,7 +41,7 @@ export type GetPhotoBinderListHandler = RequestHandler<
   { UserId: string },
   unknown | string,
   null,
-  null
+  { limit?: string; offset?: string }
 >;
 export type GetPhotoBinderDetailHandler = RequestHandler<
   { BinderId: string },
