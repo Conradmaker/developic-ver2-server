@@ -115,7 +115,7 @@ export const getRecentViewsController: GetRecentViewsHandler = async (
     const offset = req.query.offset ? +req.query.offset : 0;
     const recentViews = await RecentView.findAll({
       where: { UserId: req.params.UserId },
-      attributes: ['id', 'date', 'createdAt'],
+      attributes: ['id', 'date', 'createdAt', 'updatedAt'],
       include: [
         {
           model: Post,
@@ -131,9 +131,9 @@ export const getRecentViewsController: GetRecentViewsHandler = async (
           ],
         },
       ],
-      order: ['createdAt'],
       limit,
       offset,
+      order: [['updatedAt', 'DESC']],
     });
     if (!recentViews)
       return res.status(400).send('알수 없는 오류가 발생하였습니다.');
