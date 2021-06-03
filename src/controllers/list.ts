@@ -113,16 +113,7 @@ export const getPostList: GetPostListHandler = async (req, res, next) => {
     const limit = req.query.limit ? parseInt(req.query.limit, 10) : 12;
     const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0;
     const sort = req.query.sort || 'recent';
-    const term = () => {
-      switch (req.query.term) {
-        case 'day':
-          return 24;
-        case 'month':
-          return 24 * 30;
-        default:
-          return 24;
-      }
-    };
+
     let list;
     if (sort === 'recent') {
       list = await Post.findAll({
@@ -149,19 +140,18 @@ export const getPostList: GetPostListHandler = async (req, res, next) => {
             attributes: ['id'],
             through: { attributes: [] },
           },
+          {
+            model: HashTag,
+            attributes: ['id', 'name'],
+            through: { attributes: [] },
+          },
         ],
         order: [['createdAt', 'DESC']],
       });
     } else if (sort === 'popular') {
+      const term = req.query.term ? req.query.term : 'month';
       const popularList = await PostLog.findAll({
-        where: {
-          createdAt: {
-            [Op.lt]: new Date(),
-            [Op.gt]: new Date(
-              new Date().setHours(new Date().getHours() - term())
-            ),
-          },
-        },
+        where: calcTerm(term),
         attributes: [[Sequelize.literal('SUM(score)'), 'score'], 'PostId'],
         include: [
           {
@@ -186,6 +176,11 @@ export const getPostList: GetPostListHandler = async (req, res, next) => {
                 model: User,
                 as: 'likers',
                 attributes: ['id'],
+                through: { attributes: [] },
+              },
+              {
+                model: HashTag,
+                attributes: ['id', 'name'],
                 through: { attributes: [] },
               },
             ],
@@ -230,7 +225,7 @@ export const getExhibitionList: GetExhibitionListHandler = async (
         'endDate',
       ],
       include: [{ model: User, attributes: ['id', 'email', 'name', 'avatar'] }],
-      order: [['createdAt', 'DESC']],
+      order: [['startDate', 'DESC']],
     });
     res.status(200).json(list);
   } catch (e) {
@@ -250,7 +245,7 @@ export const getHashTaggedPostController: GetHashTaggedPostHandler = async (
     const limit = req.query.limit ? parseInt(req.query.limit, 10) : 12;
     const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0;
     const tagOption = req.query.HashtagName
-      ? { name: req.query.HashtagName }
+      ? { name: decodeURIComponent(req.query.HashtagName) }
       : { id: req.params.HashTagId };
     const tag = await HashTag.findOne({ where: tagOption });
     if (!tag) return res.status(404).send('해당하는 태그를 찾을 수 없습니다.');
@@ -302,16 +297,6 @@ export const getHashTagList: GetHashTagListHandler = async (req, res, next) => {
     const limit = req.query.limit ? parseInt(req.query.limit, 10) : 12;
     const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0;
     const sort = req.query.sort || 'recent';
-    const term = () => {
-      switch (req.query.term) {
-        case 'day':
-          return 24;
-        case 'month':
-          return 24 * 30;
-        default:
-          return 24;
-      }
-    };
     let list;
     if (sort === 'recent') {
       list = await HashTag.findAll({
@@ -321,15 +306,9 @@ export const getHashTagList: GetHashTagListHandler = async (req, res, next) => {
         order: [['createdAt', 'DESC']],
       });
     } else if (sort === 'popular') {
+      const term = req.query.term ? req.query.term : 'month';
       const popList = await HashTagLog.findAll({
-        where: {
-          createdAt: {
-            [Op.lt]: new Date(),
-            [Op.gt]: new Date(
-              new Date().setHours(new Date().getHours() - term())
-            ),
-          },
-        },
+        where: calcTerm(term),
         attributes: [[Sequelize.literal('SUM(score)'), 'score'], 'HashTagId'],
         include: [{ model: HashTag, attributes: ['id', 'name', 'hits'] }],
         group: ['HashTagId'],
@@ -584,41 +563,41 @@ export const getSearchedListController: GetSearchedListHandler = async (
         resultList = [];
 
         for (let i = 0; i < popWriterList.length; i++) {
-          resultList.push(
-            popWriterList[i].Post
-              ? await User.findOne({
-                  where: {
-                    id: ((popWriterList[i].Post as Post).User as User).id,
+          if (popWriterList[i].Post as Post) {
+            resultList.push(
+              await User.findOne({
+                where: {
+                  id: ((popWriterList[i].Post as Post).User as User).id,
+                },
+                attributes: [
+                  'id',
+                  'nickname',
+                  'avatar',
+                  'introduce',
+                  'createdAt',
+                ],
+                include: [
+                  {
+                    model: User,
+                    as: 'subscribers',
+                    attributes: ['id'],
+                    through: { attributes: [] },
                   },
-                  attributes: [
-                    'id',
-                    'nickname',
-                    'avatar',
-                    'introduce',
-                    'createdAt',
-                  ],
-                  include: [
-                    {
-                      model: User,
-                      as: 'subscribers',
-                      attributes: ['id'],
-                      through: { attributes: [] },
-                    },
-                    {
-                      model: User,
-                      as: 'writers',
-                      attributes: ['id'],
-                      through: { attributes: [] },
-                    },
-                    {
-                      model: Post,
-                      attributes: ['id', 'thumbnail'],
-                      where: { state: 1 },
-                    },
-                  ],
-                })
-              : []
-          );
+                  {
+                    model: User,
+                    as: 'writers',
+                    attributes: ['id'],
+                    through: { attributes: [] },
+                  },
+                  {
+                    model: Post,
+                    attributes: ['id', 'thumbnail'],
+                    where: { state: 1 },
+                  },
+                ],
+              })
+            );
+          }
         }
         return res.status(200).json(resultList);
       }

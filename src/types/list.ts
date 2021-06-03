@@ -20,7 +20,7 @@ export type GetPostListHandler = RequestHandler<
     sort: 'popular' | 'recent';
     limit?: string;
     offset?: string;
-    term: 'month' | 'day';
+    term: 'all' | 'year' | 'month' | 'week' | 'day';
   }
 >;
 export type GetHashTaggedPostHandler = RequestHandler<
@@ -42,7 +42,7 @@ export type GetHashTagListHandler = RequestHandler<
     sort: 'popular' | 'recent';
     limit?: string;
     offset?: string;
-    term: 'month' | 'day';
+    term: 'all' | 'year' | 'month' | 'week' | 'day';
   }
 >;
 export type GetExhibitionListHandler = RequestHandler<
