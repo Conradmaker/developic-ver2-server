@@ -95,10 +95,30 @@ export const localLoginController: RequestHandler = (req, res, next) => {
           ],
         },
         include: [
-          { model: User, as: 'subscribers', attributes: ['id'] },
-          { model: User, as: 'writers', attributes: ['id'] },
-          { model: Post, as: 'likedPosts', attributes: ['id'] },
-          { model: Comment, as: 'likedComments', attributes: ['id'] },
+          {
+            model: User,
+            as: 'subscribers',
+            attributes: ['id'],
+            through: { attributes: [] },
+          },
+          {
+            model: User,
+            as: 'writers',
+            attributes: ['id'],
+            through: { attributes: [] },
+          },
+          {
+            model: Post,
+            as: 'likedPosts',
+            attributes: ['id'],
+            through: { attributes: [] },
+          },
+          {
+            model: Comment,
+            as: 'likedComments',
+            attributes: ['id'],
+            through: { attributes: [] },
+          },
         ],
       });
       user.update({ lastLogin: new Date().toLocaleString() });
@@ -178,10 +198,30 @@ export const socialLoginRetest: RequestHandler = async (req, res, next) => {
         ],
       },
       include: [
-        { model: User, as: 'subscribers', attributes: ['id'] },
-        { model: User, as: 'writers', attributes: ['id'] },
-        { model: Post, as: 'likedPosts', attributes: ['id'] },
-        { model: Comment, as: 'likedComments', attributes: ['id'] },
+        {
+          model: User,
+          as: 'subscribers',
+          attributes: ['id'],
+          through: { attributes: [] },
+        },
+        {
+          model: User,
+          as: 'writers',
+          attributes: ['id'],
+          through: { attributes: [] },
+        },
+        {
+          model: Post,
+          as: 'likedPosts',
+          attributes: ['id'],
+          through: { attributes: [] },
+        },
+        {
+          model: Comment,
+          as: 'likedComments',
+          attributes: ['id'],
+          through: { attributes: [] },
+        },
       ],
     });
     if (!user) return res.status(400).send('로그인중 에러발생');
@@ -209,10 +249,30 @@ export const authController: RequestHandler = async (req, res, next) => {
           ],
         },
         include: [
-          { model: User, as: 'subscribers', attributes: ['id'] },
-          { model: User, as: 'writers', attributes: ['id'] },
-          { model: Post, as: 'likedPosts', attributes: ['id'] },
-          { model: Comment, as: 'likedComments', attributes: ['id'] },
+          {
+            model: User,
+            as: 'subscribers',
+            attributes: ['id'],
+            through: { attributes: [] },
+          },
+          {
+            model: User,
+            as: 'writers',
+            attributes: ['id'],
+            through: { attributes: [] },
+          },
+          {
+            model: Post,
+            as: 'likedPosts',
+            attributes: ['id'],
+            through: { attributes: [] },
+          },
+          {
+            model: Comment,
+            as: 'likedComments',
+            attributes: ['id'],
+            through: { attributes: [] },
+          },
         ],
       });
       if (!user) return res.status(404).send('로그인을 다시 해주세요.');
