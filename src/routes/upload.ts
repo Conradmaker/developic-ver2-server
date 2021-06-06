@@ -1,11 +1,15 @@
 import express from 'express';
-import multer from 'multer';
+import multer, { Multer } from 'multer';
 import path from 'path';
 import fs from 'fs';
+import multerS3 from 'multer-s3';
+import AWS from 'aws-sdk';
 import PostImage from '../db/models/postImage';
 import MetaData from '../db/models/metaData';
 import ExhibitionImage from '../db/models/exhibitionImage';
+
 const uploadRouter = express.Router();
+
 try {
   fs.accessSync(path.join('src', 'uploads', 'post'));
 } catch (e) {
@@ -31,54 +35,49 @@ try {
   console.log('폴더가 없어서 생성합니다.');
   fs.mkdirSync(path.join('src', 'uploads', 'poster'));
 }
+AWS.config.update({
+  accessKeyId: process.env.S3_ACCESS_KEY_ID,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  region: 'ap-northeast-2',
+});
+
 const upload = multer({
-  storage: multer.diskStorage({
-    destination(req, res, done) {
-      done(null, 'src/uploads/post');
-    },
-    filename(req, file, done) {
-      const ext = path.extname(file.originalname);
-      const basename = path.basename(file.originalname, ext);
-      done(null, basename + new Date().getTime() + ext);
+  storage: multerS3({
+    s3: new AWS.S3(),
+    bucket: 'developic2',
+    key(req, file, cb) {
+      cb(null, `post/${Date.now()}_${path.basename(file.originalname)}`);
     },
   }),
   limits: { fileSize: 20 * 1024 * 1024 },
 });
+
 const uploadThumb = multer({
-  storage: multer.diskStorage({
-    destination(req, res, done) {
-      done(null, 'src/uploads/thumbnail');
-    },
-    filename(req, file, done) {
-      const ext = path.extname(file.originalname);
-      const basename = path.basename(file.originalname, ext);
-      done(null, basename + new Date().getTime() + ext);
+  storage: multerS3({
+    s3: new AWS.S3(),
+    bucket: 'developic2',
+    key(req, file, cb) {
+      cb(null, `thumbnail/${Date.now()}_${path.basename(file.originalname)}`);
     },
   }),
   limits: { fileSize: 20 * 1024 * 1024 },
 });
 const uploadPoster = multer({
-  storage: multer.diskStorage({
-    destination(req, res, done) {
-      done(null, 'src/uploads/poster');
-    },
-    filename(req, file, done) {
-      const ext = path.extname(file.originalname);
-      const basename = path.basename(file.originalname, ext);
-      done(null, basename + new Date().getTime() + ext);
+  storage: multerS3({
+    s3: new AWS.S3(),
+    bucket: 'developic2',
+    key(req, file, cb) {
+      cb(null, `poster/${Date.now()}_${path.basename(file.originalname)}`);
     },
   }),
   limits: { fileSize: 20 * 1024 * 1024 },
 });
 const uploadExhibition = multer({
-  storage: multer.diskStorage({
-    destination(req, res, done) {
-      done(null, 'src/uploads/exhibition');
-    },
-    filename(req, file, done) {
-      const ext = path.extname(file.originalname);
-      const basename = path.basename(file.originalname, ext);
-      done(null, basename + new Date().getTime() + ext);
+  storage: multerS3({
+    s3: new AWS.S3(),
+    bucket: 'developic2',
+    key(req, file, cb) {
+      cb(null, `exhibition/${Date.now()}_${path.basename(file.originalname)}`);
     },
   }),
   limits: { fileSize: 20 * 1024 * 1024 },
@@ -88,9 +87,8 @@ uploadRouter.post(
   upload.single('image'),
   async (req, res, next) => {
     try {
-      console.dir(req.params);
       const newImage = await PostImage.create({
-        src: `http://localhost:8000/image/post/${req.file.filename}`,
+        src: (req.file as Express.MulterS3.File).location,
         UserId: parseInt(req.params.userId),
         PostId: 1,
       });
@@ -111,10 +109,9 @@ uploadRouter.post('/exif', async (req, res, next) => {
     next(e);
   }
 });
+
 uploadRouter.post('/thumbnail', uploadThumb.single('image'), (req, res) => {
-  res
-    .status(201)
-    .send(`http://localhost:8000/image/thumbnail/${req.file.filename}`);
+  res.status(201).send((req.file as Express.MulterS3.File).location);
 });
 
 uploadRouter.post(
@@ -124,7 +121,7 @@ uploadRouter.post(
     try {
       console.dir(req.params);
       const newImage = await ExhibitionImage.create({
-        src: `http://localhost:8000/image/exhibition/${req.file.filename}`,
+        src: (req.file as Express.MulterS3.File).location,
         UserId: parseInt(req.params.userId),
         ExhibitionId: 1,
       });
@@ -138,8 +135,7 @@ uploadRouter.post(
 );
 
 uploadRouter.post('/poster', uploadPoster.single('image'), (req, res) => {
-  res
-    .status(201)
-    .send(`http://localhost:8000/image/poster/${req.file.filename}`);
+  res.status(201).send((req.file as Express.MulterS3.File).location);
 });
+
 export default uploadRouter;
