@@ -1,7 +1,6 @@
 import express from 'express';
-import multer, { Multer } from 'multer';
+import multer from 'multer';
 import path from 'path';
-import fs from 'fs';
 import multerS3 from 'multer-s3';
 import AWS from 'aws-sdk';
 import PostImage from '../db/models/postImage';
@@ -10,31 +9,6 @@ import ExhibitionImage from '../db/models/exhibitionImage';
 
 const uploadRouter = express.Router();
 
-try {
-  fs.accessSync(path.join('src', 'uploads', 'post'));
-} catch (e) {
-  console.log('폴더가 없어서 생성합니다.');
-  fs.mkdirSync(path.join('src', 'uploads'));
-  fs.mkdirSync(path.join('src', 'uploads', 'post'));
-}
-try {
-  fs.accessSync(path.join('src', 'uploads', 'thumbnail'));
-} catch (e) {
-  console.log('폴더가 없어서 생성합니다.');
-  fs.mkdirSync(path.join('src', 'uploads', 'thumbnail'));
-}
-try {
-  fs.accessSync(path.join('src', 'uploads', 'exhibition'));
-} catch (e) {
-  console.log('폴더가 없어서 생성합니다.');
-  fs.mkdirSync(path.join('src', 'uploads', 'exhibition'));
-}
-try {
-  fs.accessSync(path.join('src', 'uploads', 'poster'));
-} catch (e) {
-  console.log('폴더가 없어서 생성합니다.');
-  fs.mkdirSync(path.join('src', 'uploads', 'poster'));
-}
 AWS.config.update({
   accessKeyId: process.env.S3_ACCESS_KEY_ID,
   secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
@@ -46,7 +20,10 @@ const upload = multer({
     s3: new AWS.S3(),
     bucket: 'developic2',
     key(req, file, cb) {
-      cb(null, `post/${Date.now()}_${path.basename(file.originalname)}`);
+      cb(
+        null,
+        `original/post/${Date.now()}_${path.basename(file.originalname)}`
+      );
     },
   }),
   limits: { fileSize: 20 * 1024 * 1024 },
@@ -57,7 +34,10 @@ const uploadThumb = multer({
     s3: new AWS.S3(),
     bucket: 'developic2',
     key(req, file, cb) {
-      cb(null, `thumbnail/${Date.now()}_${path.basename(file.originalname)}`);
+      cb(
+        null,
+        `original/thumbnail/${Date.now()}_${path.basename(file.originalname)}`
+      );
     },
   }),
   limits: { fileSize: 20 * 1024 * 1024 },
@@ -67,7 +47,10 @@ const uploadPoster = multer({
     s3: new AWS.S3(),
     bucket: 'developic2',
     key(req, file, cb) {
-      cb(null, `poster/${Date.now()}_${path.basename(file.originalname)}`);
+      cb(
+        null,
+        `original/poster/${Date.now()}_${path.basename(file.originalname)}`
+      );
     },
   }),
   limits: { fileSize: 20 * 1024 * 1024 },
@@ -77,7 +60,10 @@ const uploadExhibition = multer({
     s3: new AWS.S3(),
     bucket: 'developic2',
     key(req, file, cb) {
-      cb(null, `exhibition/${Date.now()}_${path.basename(file.originalname)}`);
+      cb(
+        null,
+        `original/exhibition/${Date.now()}_${path.basename(file.originalname)}`
+      );
     },
   }),
   limits: { fileSize: 20 * 1024 * 1024 },
@@ -87,13 +73,22 @@ uploadRouter.post(
   upload.single('image'),
   async (req, res, next) => {
     try {
+      const splitedSrc = (req.file as Express.MulterS3.File).location.split(
+        '/'
+      );
       const newImage = await PostImage.create({
-        src: (req.file as Express.MulterS3.File).location,
+        src: `/${splitedSrc[4]}/${splitedSrc[5]}`,
         UserId: parseInt(req.params.userId),
         PostId: 1,
       });
 
-      res.status(201).json({ imageId: newImage.id, src: newImage.src });
+      res.status(201).json({
+        imageId: newImage.id,
+        src: (req.file as Express.MulterS3.File).location.replace(
+          '/original',
+          '/resize/600'
+        ),
+      });
     } catch (e) {
       console.error(e);
       next(e);
@@ -111,7 +106,8 @@ uploadRouter.post('/exif', async (req, res, next) => {
 });
 
 uploadRouter.post('/thumbnail', uploadThumb.single('image'), (req, res) => {
-  res.status(201).send((req.file as Express.MulterS3.File).location);
+  const splitedSrc = (req.file as Express.MulterS3.File).location.split('/');
+  res.status(201).send(`/${splitedSrc[4]}/${splitedSrc[5]}`);
 });
 
 uploadRouter.post(
@@ -119,14 +115,21 @@ uploadRouter.post(
   uploadExhibition.single('image'),
   async (req, res, next) => {
     try {
-      console.dir(req.params);
+      const splitedSrc = (req.file as Express.MulterS3.File).location.split(
+        '/'
+      );
       const newImage = await ExhibitionImage.create({
-        src: (req.file as Express.MulterS3.File).location,
+        src: `/${splitedSrc[4]}/${splitedSrc[5]}`,
         UserId: parseInt(req.params.userId),
         ExhibitionId: 1,
       });
-
-      res.status(201).json({ imageId: newImage.id, src: newImage.src });
+      res.status(201).json({
+        imageId: newImage.id,
+        src: (req.file as Express.MulterS3.File).location.replace(
+          '/original',
+          '/resize/600'
+        ),
+      });
     } catch (e) {
       console.error(e);
       next(e);
@@ -135,7 +138,8 @@ uploadRouter.post(
 );
 
 uploadRouter.post('/poster', uploadPoster.single('image'), (req, res) => {
-  res.status(201).send((req.file as Express.MulterS3.File).location);
+  const splitedSrc = (req.file as Express.MulterS3.File).location.split('/');
+  res.status(201).send(`/${splitedSrc[4]}/${splitedSrc[5]}`);
 });
 
 export default uploadRouter;
