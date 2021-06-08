@@ -51,6 +51,7 @@ export const updateUserInfoController: UpdateUserInfoHandler = async (
       birth: req.body.birth,
       gender: req.body.gender,
       nickname: req.body.nickname,
+      avatar: req.body.avatar,
     });
 
     return res.status(200).json(req.body);

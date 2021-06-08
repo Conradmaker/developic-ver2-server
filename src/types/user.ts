@@ -26,6 +26,7 @@ export type UpdateUserInfoHandler = RequestHandler<
     gender: string;
     birth: string;
     nickname: string;
+    avatar: string;
   },
   null
 >;

@@ -55,6 +55,7 @@ const uploadPoster = multer({
   }),
   limits: { fileSize: 20 * 1024 * 1024 },
 });
+
 const uploadExhibition = multer({
   storage: multerS3({
     s3: new AWS.S3(),
@@ -68,6 +69,21 @@ const uploadExhibition = multer({
   }),
   limits: { fileSize: 20 * 1024 * 1024 },
 });
+
+const uploadAvatar = multer({
+  storage: multerS3({
+    s3: new AWS.S3(),
+    bucket: 'developic2',
+    key(req, file, cb) {
+      cb(
+        null,
+        `original/avatar/${Date.now()}_${path.basename(file.originalname)}`
+      );
+    },
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 },
+});
+
 uploadRouter.post(
   '/postimage/:userId',
   upload.single('image'),
@@ -140,6 +156,17 @@ uploadRouter.post(
 uploadRouter.post('/poster', uploadPoster.single('image'), (req, res) => {
   const splitedSrc = (req.file as Express.MulterS3.File).location.split('/');
   res.status(201).send(`/${splitedSrc[4]}/${splitedSrc[5]}`);
+});
+
+uploadRouter.post('/avatar', uploadAvatar.single('image'), (req, res) => {
+  res
+    .status(201)
+    .send(
+      (req.file as Express.MulterS3.File).location.replace(
+        '/original',
+        '/resize/400'
+      )
+    );
 });
 
 export default uploadRouter;
