@@ -48,7 +48,7 @@ PhotoBinder.init(
   }
 );
 export const associatePhotoBinder = (db: DbType): void => {
-  db.PhotoBinder.belongsTo(db.User);
+  db.PhotoBinder.belongsTo(db.User, { onDelete: 'CASCADE' });
   db.PhotoBinder.belongsToMany(db.PostImage, { through: 'BINDER_IMAGE' });
 };
 export default PhotoBinder;

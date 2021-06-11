@@ -28,7 +28,7 @@ RecentView.init(
   }
 );
 export const associateRecentView = (db: DbType): void => {
-  db.RecentView.belongsTo(db.User);
+  db.RecentView.belongsTo(db.User, { onDelete: 'CASCADE' });
   db.RecentView.belongsTo(db.Post);
 };
 export default RecentView;

@@ -27,7 +27,7 @@ DeclarePost.init(
   }
 );
 export const associateDeclarePost = (db: DbType): void => {
-  db.DeclarePost.belongsTo(db.User);
-  db.DeclarePost.belongsTo(db.Post);
+  db.DeclarePost.belongsTo(db.User, { onDelete: 'CASCADE' });
+  db.DeclarePost.belongsTo(db.Post, { onDelete: 'CASCADE' });
 };
 export default DeclarePost;

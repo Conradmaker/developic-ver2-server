@@ -55,7 +55,7 @@ PicStory.init(
   }
 );
 export const associatePicStory = (db: DbType): void => {
-  db.PicStory.belongsTo(db.User);
+  db.PicStory.belongsTo(db.User, { onDelete: 'CASCADE' });
   db.PicStory.belongsToMany(db.Post, { through: 'STORY_POST' });
 };
 export default PicStory;

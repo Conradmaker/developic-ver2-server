@@ -27,7 +27,7 @@ DeclareComment.init(
   }
 );
 export const associateDeclareComment = (db: DbType): void => {
-  db.DeclareComment.belongsTo(db.User);
-  db.DeclareComment.belongsTo(db.Comment);
+  db.DeclareComment.belongsTo(db.User, { onDelete: 'CASCADE' });
+  db.DeclareComment.belongsTo(db.Comment, { onDelete: 'CASCADE' });
 };
 export default DeclareComment;

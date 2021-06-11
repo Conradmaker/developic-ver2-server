@@ -37,6 +37,6 @@ HashTagLog.init(
   }
 );
 export const associateHashTagLog = (db: DbType): void => {
-  db.HashTagLog.belongsTo(db.HashTag);
+  db.HashTagLog.belongsTo(db.HashTag, { onDelete: 'CASCADE' });
 };
 export default HashTagLog;

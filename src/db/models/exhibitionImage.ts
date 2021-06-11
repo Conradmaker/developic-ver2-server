@@ -27,7 +27,7 @@ ExhibitionImage.init(
   }
 );
 export const associateExhibitionImage = (db: DbType): void => {
-  db.ExhibitionImage.belongsTo(db.Exhibition);
-  db.ExhibitionImage.belongsTo(db.User);
+  db.ExhibitionImage.belongsTo(db.Exhibition, { onDelete: 'CASCADE' });
+  db.ExhibitionImage.belongsTo(db.User, { onDelete: 'CASCADE' });
 };
 export default ExhibitionImage;

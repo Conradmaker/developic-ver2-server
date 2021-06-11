@@ -27,8 +27,8 @@ PostImage.init(
   }
 );
 export const associatePostImage = (db: DbType): void => {
-  db.PostImage.belongsTo(db.User);
-  db.PostImage.belongsTo(db.Post);
+  db.PostImage.belongsTo(db.User, { onDelete: 'CASCADE' });
+  db.PostImage.belongsTo(db.Post, { onDelete: 'CASCADE' });
   db.PostImage.hasOne(db.MetaData);
   db.PostImage.belongsToMany(db.PhotoBinder, { through: 'BINDER_IMAGE' });
 };

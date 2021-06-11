@@ -38,6 +38,6 @@ PostLog.init(
   }
 );
 export const associatePostLog = (db: DbType): void => {
-  db.PostLog.belongsTo(db.Post);
+  db.PostLog.belongsTo(db.Post, { onDelete: 'CASCADE' });
 };
 export default PostLog;

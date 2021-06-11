@@ -83,7 +83,7 @@ Exhibition.init(
   }
 );
 export const associateExhibition = (db: DbType): void => {
-  db.Exhibition.belongsTo(db.User);
+  db.Exhibition.belongsTo(db.User, { onDelete: 'CASCADE' });
   db.Exhibition.hasMany(db.ExhibitionImage);
 };
 export default Exhibition;
