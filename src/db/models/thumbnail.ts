@@ -6,6 +6,7 @@ class Thumbnail extends Model {
   public readonly id!: string;
 
   public src!: string;
+  public type!: 'poster' | 'thumbnail' | 'avatar';
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -16,6 +17,11 @@ Thumbnail.init(
     src: {
       type: DataTypes.STRING(128),
       allowNull: false,
+    },
+    type: {
+      type: DataTypes.STRING(58),
+      allowNull: false,
+      defaultValue: 'thumbnail',
     },
   },
   {

@@ -6,6 +6,7 @@ import AWS from 'aws-sdk';
 import PostImage from '../db/models/postImage';
 import MetaData from '../db/models/metaData';
 import ExhibitionImage from '../db/models/exhibitionImage';
+import Thumbnail from '../db/models/thumbnail';
 
 const uploadRouter = express.Router();
 
@@ -121,10 +122,25 @@ uploadRouter.post('/exif', async (req, res, next) => {
   }
 });
 
-uploadRouter.post('/thumbnail', uploadThumb.single('image'), (req, res) => {
-  const splitedSrc = (req.file as Express.MulterS3.File).location.split('/');
-  res.status(201).send(`/${splitedSrc[4]}/${splitedSrc[5]}`);
-});
+uploadRouter.post(
+  '/thumbnail',
+  uploadThumb.single('image'),
+  async (req, res, next) => {
+    try {
+      const splitedSrc = (req.file as Express.MulterS3.File).location.split(
+        '/'
+      );
+      await Thumbnail.create({
+        src: `/${splitedSrc[4]}/${splitedSrc[5]}`,
+        type: 'thumbnail',
+      });
+      res.status(201).send(`/${splitedSrc[4]}/${splitedSrc[5]}`);
+    } catch (e) {
+      console.error(e);
+      next(e);
+    }
+  }
+);
 
 uploadRouter.post(
   '/exhibitionimage/:userId',
@@ -153,20 +169,51 @@ uploadRouter.post(
   }
 );
 
-uploadRouter.post('/poster', uploadPoster.single('image'), (req, res) => {
-  const splitedSrc = (req.file as Express.MulterS3.File).location.split('/');
-  res.status(201).send(`/${splitedSrc[4]}/${splitedSrc[5]}`);
-});
+uploadRouter.post(
+  '/poster',
+  uploadPoster.single('image'),
+  async (req, res, next) => {
+    try {
+      const splitedSrc = (req.file as Express.MulterS3.File).location.split(
+        '/'
+      );
+      await Thumbnail.create({
+        src: `/${splitedSrc[4]}/${splitedSrc[5]}`,
+        type: 'poster',
+      });
+      res.status(201).send(`/${splitedSrc[4]}/${splitedSrc[5]}`);
+    } catch (e) {
+      console.error(e);
+      next(e);
+    }
+  }
+);
 
-uploadRouter.post('/avatar', uploadAvatar.single('image'), (req, res) => {
-  res
-    .status(201)
-    .send(
-      (req.file as Express.MulterS3.File).location.replace(
-        '/original',
-        '/resize/400'
-      )
-    );
-});
+uploadRouter.post(
+  '/avatar',
+  uploadAvatar.single('image'),
+  async (req, res, next) => {
+    try {
+      const splitedSrc = (req.file as Express.MulterS3.File).location.split(
+        '/'
+      );
+      await Thumbnail.create({
+        src: `/${splitedSrc[4]}/${splitedSrc[5]}`,
+        type: 'avatar',
+      });
+      res
+        .status(201)
+        .send(
+          (req.file as Express.MulterS3.File).location.replace(
+            '/original',
+            '/resize/400'
+          )
+        );
+    } catch (e) {
+      console.error(e);
+      next(e);
+    }
+  }
+);
 
 export default uploadRouter;
