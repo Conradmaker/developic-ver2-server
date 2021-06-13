@@ -250,11 +250,30 @@ export const getHashTaggedPostController: GetHashTaggedPostHandler = async (
     const tag = await HashTag.findOne({ where: tagOption });
     if (!tag) return res.status(404).send('해당하는 태그를 찾을 수 없습니다.');
 
-    HashTagLog.create({
-      date: new Date().toLocaleDateString(),
-      score: 1,
-      HashTagId: tag.id,
+    const currentDate = new Date();
+    const existTag = await HashTagLog.findOne({
+      where: {
+        UserId: req.user?.id || 0,
+        start_date: {
+          [Op.gte]: new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            currentDate.getDate()
+          ),
+          [Op.lt]: currentDate,
+        },
+      },
     });
+
+    if (!existTag) {
+      HashTagLog.create({
+        date: new Date().toLocaleDateString(),
+        score: 1,
+        type: 'view',
+        HashTagId: tag.id,
+        UserId: req.user ? req.user.id : null,
+      });
+    }
 
     const resultList = await tag.getPosts({
       where: { state: 1 },

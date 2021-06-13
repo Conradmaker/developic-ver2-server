@@ -8,6 +8,9 @@ class HashTagLog extends Model {
 
   public date!: string;
   public score!: 1 | 2;
+  public type!: 'view' | 'contain';
+  public HashTagId!: number;
+  public UserId!: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -23,6 +26,16 @@ HashTagLog.init(
       defaultValue: new Date(),
     },
     score: {
+      type: DataTypes.TINYINT(),
+      allowNull: false,
+      defaultValue: 1,
+    },
+    type: {
+      type: DataTypes.STRING(30),
+      allowNull: false,
+      defaultValue: 'view',
+    },
+    UserId: {
       type: DataTypes.TINYINT(),
       allowNull: false,
       defaultValue: 1,

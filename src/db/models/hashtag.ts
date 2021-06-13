@@ -14,7 +14,6 @@ class HashTag extends Model {
   public readonly id!: string;
 
   public name!: string;
-  public hits!: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -30,11 +29,6 @@ HashTag.init(
     name: {
       type: DataTypes.STRING(50),
       allowNull: false,
-    },
-    hits: {
-      type: DataTypes.INTEGER(),
-      allowNull: false,
-      defaultValue: 0,
     },
   },
   {

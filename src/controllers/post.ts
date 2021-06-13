@@ -88,7 +88,9 @@ export const preSaveController: RequestHandler = async (req, res, next) => {
         HashTagLog.create({
           date: new Date().toLocaleDateString(),
           score: 2,
+          type: 'contain',
           HashTagId: req.body.tagList[i],
+          UserId: req.user ? req.user.id : null,
         });
       }
       req.body.imageList.map((imageId: number) => {
@@ -108,7 +110,9 @@ export const preSaveController: RequestHandler = async (req, res, next) => {
           HashTagLog.create({
             date: new Date().toLocaleDateString(),
             score: 2,
+            type: 'contain',
             HashTagId: req.body.tagList[i],
+            UserId: req.user ? req.user.id : null,
           });
         }
       }
@@ -207,13 +211,24 @@ export const getPostDetail: GetPostDetailHandler = async (req, res, next) => {
         },
       ],
     });
+
     if (!post) return res.status(404).send('게시글을 찾을 수 없습니다.');
-    post.update({ hits: post.hits + 1 });
-    PostLog.create({
-      date: new Date().toLocaleDateString(),
-      score: 1,
-      PostId: post.id,
+
+    const existView = await RecentView.findOne({
+      where: { UserId: (req.user as User).id || 0, PostId: req.params.PostId },
     });
+
+    if (!existView) {
+      post.update({ hits: post.hits + 1 });
+      PostLog.create({
+        date: new Date().toLocaleDateString(),
+        score: 1,
+        type: 'view',
+        PostId: post.id,
+        UserId: req.user ? req.user.id : null,
+      });
+    }
+
     if (req.user) {
       const existView = await RecentView.findOne({
         where: { UserId: req.user.id, PostId: post.id },

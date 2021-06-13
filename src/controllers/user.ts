@@ -196,7 +196,9 @@ export const addLikePostController: ToggleLikePostHandler = async (
     PostLog.create({
       date: new Date().toLocaleDateString(),
       score: 2,
+      type: 'like',
       PostId: req.body.PostId,
+      UserId: req.user ? req.user.id : null,
     });
     return res.status(200).json(req.body);
   } catch (e) {

@@ -120,8 +120,8 @@ export const associateUser = (db: DbType): void => {
   db.User.hasMany(db.RecentView);
   db.User.hasMany(db.Exhibition);
   db.User.hasMany(db.ExhibitionImage);
-  db.User.hasOne(db.UserIntro);
   db.User.hasMany(db.Post);
+  db.User.hasOne(db.UserIntro);
   db.User.belongsToMany(db.User, {
     through: 'SUBSCRIBE',
     as: 'writers',
