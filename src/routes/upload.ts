@@ -7,6 +7,7 @@ import PostImage from '../db/models/postImage';
 import MetaData from '../db/models/metaData';
 import ExhibitionImage from '../db/models/exhibitionImage';
 import Thumbnail from '../db/models/thumbnail';
+import cryptoRandomString from 'crypto-random-string';
 
 const uploadRouter = express.Router();
 
@@ -21,9 +22,10 @@ const upload = multer({
     s3: new AWS.S3(),
     bucket: 'developic2',
     key(req, file, cb) {
+      const ext = path.extname(file.originalname);
       cb(
         null,
-        `original/post/${Date.now()}_${path.basename(file.originalname)}`
+        `original/post/${Date.now()}_${cryptoRandomString({ length: 5 }) + ext}`
       );
     },
   }),
@@ -35,9 +37,12 @@ const uploadThumb = multer({
     s3: new AWS.S3(),
     bucket: 'developic2',
     key(req, file, cb) {
+      const ext = path.extname(file.originalname);
       cb(
         null,
-        `original/thumbnail/${Date.now()}_${path.basename(file.originalname)}`
+        `original/thumbnail/${Date.now()}_${
+          cryptoRandomString({ length: 5 }) + ext
+        }`
       );
     },
   }),
@@ -48,9 +53,12 @@ const uploadPoster = multer({
     s3: new AWS.S3(),
     bucket: 'developic2',
     key(req, file, cb) {
+      const ext = path.extname(file.originalname);
       cb(
         null,
-        `original/poster/${Date.now()}_${path.basename(file.originalname)}`
+        `original/poster/${Date.now()}_${
+          cryptoRandomString({ length: 5 }) + ext
+        }`
       );
     },
   }),
@@ -62,9 +70,12 @@ const uploadExhibition = multer({
     s3: new AWS.S3(),
     bucket: 'developic2',
     key(req, file, cb) {
+      const ext = path.extname(file.originalname);
       cb(
         null,
-        `original/exhibition/${Date.now()}_${path.basename(file.originalname)}`
+        `original/exhibition/${Date.now()}_${
+          cryptoRandomString({ length: 5 }) + ext
+        }`
       );
     },
   }),
@@ -76,9 +87,12 @@ const uploadAvatar = multer({
     s3: new AWS.S3(),
     bucket: 'developic2',
     key(req, file, cb) {
+      const ext = path.extname(file.originalname);
       cb(
         null,
-        `original/avatar/${Date.now()}_${path.basename(file.originalname)}`
+        `original/avatar/${Date.now()}_${
+          cryptoRandomString({ length: 5 }) + ext
+        }`
       );
     },
   }),
