@@ -286,13 +286,10 @@ export const authController: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const logoutController: RequestHandler = async (req, res, next) => {
-  try {
-    await req.logout();
-    req.session.destroy(e => console.error(e));
+export const logoutController: RequestHandler = (req, res) => {
+  req.logout();
+  req.session.destroy(() => {
+    res.clearCookie('develuth');
     res.send('ok');
-  } catch (e) {
-    console.error(e);
-    next(e);
-  }
+  });
 };

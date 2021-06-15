@@ -8,6 +8,7 @@ class Admin extends Model {
   public email!: string;
   public password!: string;
   public name!: string;
+  public nickname!: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -23,6 +24,10 @@ Admin.init(
       allowNull: false,
     },
     name: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+    },
+    nickname: {
       type: DataTypes.STRING(50),
       allowNull: false,
     },

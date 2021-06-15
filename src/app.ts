@@ -28,6 +28,7 @@ if (prod) {
   app.use(logger('dev'));
   app.use(cors({ origin: true, credentials: true }));
 }
+app.use('/image', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_KEY));
@@ -39,13 +40,12 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: false,
+      // sameSite: 'none',
       domain: prod ? process.env.CLIENT_DOMAIN : undefined,
     },
     name: 'develuth',
   })
 );
-console.log(process.env.KAKAO_API);
-app.use('/image', express.static(path.join(__dirname, 'uploads')));
 
 app.use(passport.initialize());
 app.use(passport.session());

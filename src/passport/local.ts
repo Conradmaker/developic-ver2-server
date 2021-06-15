@@ -9,7 +9,9 @@ export default (): void => {
       { usernameField: 'email', passwordField: 'password' },
       async (email, password, done) => {
         try {
-          const user = await User.findOne({ where: { email } });
+          const user = await User.findOne({
+            where: { email, loginType: 'local' },
+          });
           if (!user)
             return done(null, false, {
               message: '존재하지 않는 이메일 입니다.',

@@ -37,8 +37,7 @@ HashTagLog.init(
     },
     UserId: {
       type: DataTypes.TINYINT(),
-      allowNull: false,
-      defaultValue: 1,
+      allowNull: true,
     },
   },
   {

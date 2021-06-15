@@ -254,7 +254,7 @@ export const getHashTaggedPostController: GetHashTaggedPostHandler = async (
     const existTag = await HashTagLog.findOne({
       where: {
         UserId: req.user?.id || 0,
-        start_date: {
+        createdAt: {
           [Op.gte]: new Date(
             currentDate.getFullYear(),
             currentDate.getMonth(),
@@ -321,7 +321,7 @@ export const getHashTagList: GetHashTagListHandler = async (req, res, next) => {
       list = await HashTag.findAll({
         limit,
         offset,
-        attributes: ['id', 'name', 'hits'],
+        attributes: ['id', 'name'],
         order: [['createdAt', 'DESC']],
       });
     } else if (sort === 'popular') {
@@ -329,7 +329,7 @@ export const getHashTagList: GetHashTagListHandler = async (req, res, next) => {
       const popList = await HashTagLog.findAll({
         where: calcTerm(term),
         attributes: [[Sequelize.literal('SUM(score)'), 'score'], 'HashTagId'],
-        include: [{ model: HashTag, attributes: ['id', 'name', 'hits'] }],
+        include: [{ model: HashTag, attributes: ['id', 'name'] }],
         group: ['HashTagId'],
         order: [[Sequelize.literal('score'), 'DESC']],
       });
