@@ -198,7 +198,12 @@ export const getPostDetail: GetPostDetailHandler = async (req, res, next) => {
       where: { id: req.params.PostId },
       include: [
         { model: User, attributes: ['id', 'nickname', 'avatar', 'introduce'] },
-        { model: User, as: 'likers', attributes: ['id'] },
+        {
+          model: User,
+          as: 'likers',
+          attributes: ['id'],
+          through: { attributes: [] },
+        },
         { model: HashTag, attributes: ['id', 'name'] },
         {
           model: Comment,
@@ -215,7 +220,10 @@ export const getPostDetail: GetPostDetailHandler = async (req, res, next) => {
     if (!post) return res.status(404).send('게시글을 찾을 수 없습니다.');
 
     const existView = await RecentView.findOne({
-      where: { UserId: (req.user as User).id || 0, PostId: req.params.PostId },
+      where: {
+        UserId: req.user ? (req.user as User).id : 0,
+        PostId: req.params.PostId,
+      },
     });
 
     if (!existView) {
