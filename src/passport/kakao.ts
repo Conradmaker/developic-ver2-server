@@ -8,7 +8,7 @@ export default (): void => {
       {
         clientID: process.env.KAKAO_API as string,
         clientSecret: '',
-        callbackURL: 'http://192.168.1.189:8000/auth/kakao/callback',
+        callbackURL: `${process.env.SERVER_DOMAIN}/auth/kakao/callback`,
       },
       async (accessToken, refreshToken, profile, done) => {
         console.log(profile);

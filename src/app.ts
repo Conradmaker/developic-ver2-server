@@ -29,10 +29,13 @@ if (prod) {
   app.use(logger('combined'));
   app.use(helmet());
   app.use(hpp());
-  //app.use(cors({ origin: ['https://developic.netlify.app/'], credentials: true }));
   app.use(
     cors({
-      origin: ['http://localhost:3000', 'https://developic.netlify.app/'],
+      origin: [
+        'http://localhost:3000',
+        'http://wongeun.xyz',
+        'https://developic.netlify.app',
+      ],
       credentials: true,
     })
   );
@@ -62,7 +65,10 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/post/photo', express.static(path.join(__dirname, 'uploads/photos')));
-app.use('/test', (req, res) => res.send('서버 작동중'));
-app.use('/', router);
+app.use('/test', (req, res) => {
+  console.log(process.env.NODE_ENV);
+  res.send(process.env.NODE_ENV);
+});
+app.use('/api', router);
 app.use('/err', (req, res) => res.send('에러'));
 app.listen(PORT, () => console.log(`${PORT}포트에서 서버가 실행되었습니다.`));

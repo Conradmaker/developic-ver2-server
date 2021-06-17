@@ -6,10 +6,11 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon",
+    "pro": "cross-env NODE_ENV=production nodemon",
     "se": "sequelize init",
-    "build": "tsc",
-    "deploy": "pm2 start build/app.js",
-    "pro-start": "cross-env NODE_ENV=production pm2 start build/app.js"
+    "build": "cross-env NODE_OPTIONS=--max_old_space_size=800 tsc",
+    "deploy": "cross-env NODE_OPTIONS=--max_old_space_size=800 pm2 start build/app.js",
+    "pro-start": "cross-env NODE_ENV=production sudo pm2 start build/app.js"
   },
   "dependencies": {
     "@types/express-session": "^1.17.3",
