@@ -34,7 +34,7 @@ export const signUpController: RequestHandler = async (req, res, next) => {
       name: req.body.name,
       nickname: req.body.nickname,
       loginType: 'local',
-      avatar: 'http://localhost:8000/image/avatar/initial_avatar.png',
+      avatar: `${process.env.SERVER_DOMAIN}/image/avatar/initial_avatar.png`,
       verificationCode: randomNumber,
     });
     if (!user) return res.status(400).send('회원가입중 오류 발생');
@@ -145,7 +145,7 @@ export const kakaoLoginController: RequestHandler = (req, res, next) => {
         return next(loginErr);
       }
       return res.redirect(
-        `http://localhost:3000/user/social?email=${user.email}&type=kakao`
+        `${process.env.CLIENT_DOMAIN}/user/social?email=${user.email}&type=kakao`
       );
     });
   })(req, res, next);
@@ -163,7 +163,7 @@ export const facebookLoginController: RequestHandler = (req, res, next) => {
         return next(loginErr);
       }
       return res.redirect(
-        `http://localhost:3000/user/social?email=${user.email}&type=facebook`
+        `${process.env.CLIENT_DOMAIN}/user/social?email=${user.email}&type=facebook`
       );
     });
   })(req, res, next);
@@ -181,7 +181,7 @@ export const googleLoginController: RequestHandler = (req, res, next) => {
         return next(loginErr);
       }
       return res.redirect(
-        `http://localhost:3000/user/social?email=${user.email}&type=google`
+        `${process.env.CLIENT_DOMAIN}/user/social?email=${user.email}&type=google`
       );
     });
   })(req, res, next);

@@ -84,7 +84,7 @@ export const verificationMailTemplate = (
   
       <div style="Margin-left: 20px;Margin-right: 20px;">
 <div class="btn btn--flat btn--large" style="text-align:center;">
-  <!--[if !mso]--><a style="border-radius: 0;display: inline-block;font-size: 14px;font-weight: bold;line-height: 24px;padding: 12px 24px;text-align: center;text-decoration: none !important;transition: opacity 0.1s ease-in;color: #ffffff !important;background-color: #418812;font-family: Avenir, sans-serif;" href="http://localhost:8000/auth/verification?email=${email}&code=${randomNumber}" target="_blank">인증</a><!--[endif]-->
+  <!--[if !mso]--><a style="border-radius: 0;display: inline-block;font-size: 14px;font-weight: bold;line-height: 24px;padding: 12px 24px;text-align: center;text-decoration: none !important;transition: opacity 0.1s ease-in;color: #ffffff !important;background-color: #418812;font-family: Avenir, sans-serif;" href="${process.env.SERVER_DOMAIN}/auth/verification?email=${email}&code=${randomNumber}" target="_blank">인증</a><!--[endif]-->
 <!--[if mso]><p style="line-height:0;margin:0;">&nbsp;</p><v:rect xmlns:v="urn:schemas-microsoft-com:vml" href="https://cozi.createsend1.com/t/t-l-mikjdtk-l-y/" style="width:72px" fillcolor="#418812" stroke="f"><v:textbox style="mso-fit-shape-to-text:t" inset="0px,12px,0px,12px"><center style="font-size:14px;line-height:24px;color:#FFFFFF;font-family:Avenir,sans-serif;font-weight:bold;mso-line-height-rule:exactly;mso-text-raise:4px">&#51064;&#51613;</center></v:textbox></v:rect><![endif]--></div>
 </div>
   

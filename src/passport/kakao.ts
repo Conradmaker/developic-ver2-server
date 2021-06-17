@@ -8,7 +8,7 @@ export default (): void => {
       {
         clientID: process.env.KAKAO_API as string,
         clientSecret: '',
-        callbackURL: 'http://localhost:8000/auth/kakao/callback',
+        callbackURL: 'http://192.168.1.189:8000/auth/kakao/callback',
       },
       async (accessToken, refreshToken, profile, done) => {
         console.log(profile);
@@ -36,7 +36,7 @@ export default (): void => {
               birth: profile._json.kakao_account.birthday,
               avatar:
                 profile._json.kakao_account.profile.profile_image_url ||
-                'http://localhost:8000/image/avatar/initial_avatar.png',
+                `${process.env.SERVER_DOMAIN}/image/avatar/initial_avatar.png`,
               lastLogin: new Date().toLocaleDateString('KO-kr'),
             });
             done(null, newUser);

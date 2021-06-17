@@ -8,7 +8,7 @@ export default (): void => {
       {
         clientID: process.env.GOOGLE_API as string,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-        callbackURL: 'http://localhost:8000/auth/google/callback',
+        callbackURL: `${process.env.SERVER_DOMAIN}/auth/google/callback`,
       },
       async (accessToken, refreshToken, profile, done) => {
         console.log(profile);
@@ -31,7 +31,7 @@ export default (): void => {
               socialId: profile.id,
               avatar:
                 profile._json.picture ||
-                'http://localhost:8000/image/avatar/initial_avatar.png',
+                `${process.env.SERVER_DOMAIN}/image/avatar/initial_avatar.png`,
               lastLogin: new Date().toLocaleDateString('KO-kr'),
             });
             done(null, newUser);

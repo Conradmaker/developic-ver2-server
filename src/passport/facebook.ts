@@ -8,7 +8,7 @@ export default (): void => {
       {
         clientID: process.env.FACEBOOK_API as string,
         clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
-        callbackURL: 'http://localhost:8000/auth/facebook/callback',
+        callbackURL: `${process.env.SERVER_DOMAIN}auth/facebook/callback`,
         profileFields: ['id', 'displayName', 'photos', 'email'],
       },
       async (accessToken, refreshToken, profile, done) => {
@@ -34,7 +34,7 @@ export default (): void => {
               //   birth: profile._json.kakao_account.birthday,
               avatar: profile.photos
                 ? profile.photos[0].value
-                : 'http://localhost:8000/image/avatar/initial_avatar.png',
+                : `${process.env.SERVER_DOMAIN}/image/avatar/initial_avatar.png`,
               lastLogin: new Date().toLocaleDateString('KO-kr'),
             });
             done(null, newUser, null);
