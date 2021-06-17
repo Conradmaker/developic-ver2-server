@@ -19,11 +19,8 @@ import {
   CreatePhotoBinderHandler,
 } from '../types/drawer';
 
-export const getLikesListController: GetLikesListHandler = async (
-  req,
-  res,
-  next
-) => {
+//NOTE: 좋아요 게시글 목록 조회
+export const getLikesListCtr: GetLikesListHandler = async (req, res, next) => {
   try {
     const limit = req.query.limit ? +req.query.limit : 12;
     const offset = req.query.offset ? +req.query.offset : 0;
@@ -50,7 +47,8 @@ export const getLikesListController: GetLikesListHandler = async (
   }
 };
 
-export const removeLikesItemController: RemoveLikesItemHandler = async (
+//NOTE: 좋아요 항목 삭제
+export const removeLikesItemCtr: RemoveLikesItemHandler = async (
   req,
   res,
   next
@@ -66,12 +64,8 @@ export const removeLikesItemController: RemoveLikesItemHandler = async (
   }
 };
 
-//임시저장글 목록 조회
-export const getTempListController: GetTempListHandler = async (
-  req,
-  res,
-  next
-) => {
+//NOTE: 임시저장 게시글 목록 조회
+export const getTempListCtr: GetTempListHandler = async (req, res, next) => {
   try {
     const limit = req.query.limit ? +req.query.limit : 12;
     const offset = req.query.offset ? +req.query.offset : 0;
@@ -88,8 +82,9 @@ export const getTempListController: GetTempListHandler = async (
     next(e);
   }
 };
-//임시저장글 아이템 삭제
-export const removeTempPostController: RemoveTempPostHandler = async (
+
+//NOTE: 임시저장 게시글 삭제
+export const removeTempPostCtr: RemoveTempPostHandler = async (
   req,
   res,
   next
@@ -104,8 +99,8 @@ export const removeTempPostController: RemoveTempPostHandler = async (
   }
 };
 
-//최근 본 글 리스트 조회
-export const getRecentViewsController: GetRecentViewsHandler = async (
+//NOTE: 최근 본 글 목록 조회
+export const getRecentViewsCtr: GetRecentViewsHandler = async (
   req,
   res,
   next
@@ -144,8 +139,8 @@ export const getRecentViewsController: GetRecentViewsHandler = async (
   }
 };
 
-//최근본글 항목 삭제
-export const removeRecentViewController: RemoveRecentViewHandler = async (
+//NOTE: 최근 본 글 삭제
+export const removeRecentViewCtr: RemoveRecentViewHandler = async (
   req,
   res,
   next
@@ -162,8 +157,8 @@ export const removeRecentViewController: RemoveRecentViewHandler = async (
   }
 };
 
-//포토바인더 리스트 조회
-export const getPhotoBinderListController: GetPhotoBinderListHandler = async (
+//NOTE: 포토바인더 목록 조회
+export const getBinderListCtr: GetPhotoBinderListHandler = async (
   req,
   res,
   next
@@ -184,8 +179,8 @@ export const getPhotoBinderListController: GetPhotoBinderListHandler = async (
   }
 };
 
-//포토바인더 디테일 조회
-export const getPhotoBinderDetailController: GetPhotoBinderDetailHandler = async (
+//NOTE: 포토바인더 안의 사진정보 및 디테일 불러오기
+export const getBinderDetailCtr: GetPhotoBinderDetailHandler = async (
   req,
   res,
   next
@@ -202,8 +197,8 @@ export const getPhotoBinderDetailController: GetPhotoBinderDetailHandler = async
   }
 };
 
-//바인더 정보 수정
-export const updatePhotoBinderDetailController: UpdatePhotoBinderDetailHandler = async (
+//NOTE: 포토바인더 수정
+export const updateBinderDetailCtr: UpdatePhotoBinderDetailHandler = async (
   req,
   res,
   next
@@ -224,8 +219,8 @@ export const updatePhotoBinderDetailController: UpdatePhotoBinderDetailHandler =
   }
 };
 
-//바인더 안의 선택 사진들 삭제
-export const removeBinderPhotoController: RemoveBinderPhotoHandler = async (
+//NOTE: 포토바인더에서 사진 삭제
+export const removeBinderPhotoCtr: RemoveBinderPhotoHandler = async (
   req,
   res,
   next
@@ -245,8 +240,8 @@ export const removeBinderPhotoController: RemoveBinderPhotoHandler = async (
   }
 };
 
-//바인더 안의 선택 사진들 추가
-export const addBinderPhotoController: AddBinderPhotoHandler = async (
+//NOTE: 포토바인더에 사진 추가
+export const addBinderPhotoCtr: AddBinderPhotoHandler = async (
   req,
   res,
   next
@@ -264,8 +259,8 @@ export const addBinderPhotoController: AddBinderPhotoHandler = async (
   }
 };
 
-//포토바인더 생성
-export const createPhotoBinderController: CreatePhotoBinderHandler = async (
+//NOTE: 포토바인더 생성
+export const createBinderCtr: CreatePhotoBinderHandler = async (
   req,
   res,
   next
@@ -285,8 +280,8 @@ export const createPhotoBinderController: CreatePhotoBinderHandler = async (
   }
 };
 
-//포토바인더 삭제
-export const removePhotoBinderController: RemovePhotoBinderHandler = async (
+//NOTE: 포토바인더 삭제
+export const removeBinderCtr: RemovePhotoBinderHandler = async (
   req,
   res,
   next

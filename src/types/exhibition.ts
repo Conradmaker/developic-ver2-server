@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
-// 파라미터 , 응답바디 , 요청바디, 쿼리
+
 export type MakeNewExhibitionHandler = RequestHandler<
-  null,
+  unknown,
   unknown | string,
   {
     cost: string;
@@ -17,7 +17,7 @@ export type MakeNewExhibitionHandler = RequestHandler<
     poster: string;
     UserId: number;
   },
-  null
+  Record<string, any>
 >;
 export type GetExhibitionListHandler = RequestHandler<
   null,

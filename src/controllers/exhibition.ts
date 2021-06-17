@@ -6,7 +6,7 @@ import {
   MakeNewExhibitionHandler,
 } from '../types/exhibition';
 
-//전시회 등록
+//NOTE: 새로운 전시회 등록
 export const makeNewExhibition: MakeNewExhibitionHandler = async (
   req,
   res,
@@ -21,7 +21,7 @@ export const makeNewExhibition: MakeNewExhibitionHandler = async (
   }
 };
 
-//전시회 리스트 조회
+//NOTE: 전시회 목록 조회
 export const getExhibitionList: GetExhibitionListHandler = async (
   req,
   res,
@@ -44,7 +44,7 @@ export const getExhibitionList: GetExhibitionListHandler = async (
   }
 };
 
-//전시회 디테일 조회
+//NOTE: 전시회 상세정보 불러오기
 export const getExhibitionDetail: GetExhibitionDetailHandler = async (
   req,
   res,

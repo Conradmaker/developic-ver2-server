@@ -1,13 +1,14 @@
 import cryptoRandomString from 'crypto-random-string';
 import bcrypt from 'bcrypt';
-import { transporter } from '../routes/auth';
 import { verificationMailTemplate } from '../utils/makeMail';
 import User from '../db/models/user';
 import { RequestHandler } from 'express';
 import passport from 'passport';
 import Post from '../db/models/post';
 import Comment from '../db/models/comment';
+import { transporter } from '../middlewares/nodeMailer';
 
+//NOTE: 회원가입
 export const signUpController: RequestHandler = async (req, res, next) => {
   try {
     const randomNumber = cryptoRandomString({ length: 6 });
@@ -48,6 +49,7 @@ export const signUpController: RequestHandler = async (req, res, next) => {
   }
 };
 
+//NOTE: 이메일인증
 export const emailVerificationHandler: RequestHandler = async (
   req,
   res,
@@ -70,6 +72,7 @@ export const emailVerificationHandler: RequestHandler = async (
   }
 };
 
+//NOTE: 로컬로그인
 export const localLoginController: RequestHandler = (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) {
@@ -127,6 +130,7 @@ export const localLoginController: RequestHandler = (req, res, next) => {
   })(req, res, next);
 };
 
+//NOTE: 카카오로그인
 export const kakaoLoginController: RequestHandler = (req, res, next) => {
   passport.authenticate('kakao', (err, user, info) => {
     if (err) {
@@ -147,6 +151,7 @@ export const kakaoLoginController: RequestHandler = (req, res, next) => {
   })(req, res, next);
 };
 
+//NOTE: 페이스북로그인
 export const facebookLoginController: RequestHandler = (req, res, next) => {
   passport.authenticate('facebook', (err, user) => {
     if (err) {
@@ -164,6 +169,7 @@ export const facebookLoginController: RequestHandler = (req, res, next) => {
   })(req, res, next);
 };
 
+//NOTE: 구글로그인
 export const googleLoginController: RequestHandler = (req, res, next) => {
   passport.authenticate('google', (err, user) => {
     if (err) {
@@ -181,6 +187,7 @@ export const googleLoginController: RequestHandler = (req, res, next) => {
   })(req, res, next);
 };
 
+//NOTE: 소셜로그인 인증
 export const socialLoginRetest: RequestHandler = async (req, res, next) => {
   try {
     const user = await User.findOne({
@@ -233,6 +240,7 @@ export const socialLoginRetest: RequestHandler = async (req, res, next) => {
   }
 };
 
+//NOTE: 로그인 인증
 export const authController: RequestHandler = async (req, res, next) => {
   try {
     const id = req.user?.id;
@@ -286,6 +294,7 @@ export const authController: RequestHandler = async (req, res, next) => {
   }
 };
 
+//NOTE: 로그아웃
 export const logoutController: RequestHandler = (req, res) => {
   req.logout();
   req.session.destroy(() => {

@@ -3,19 +3,17 @@ import { RequestHandler } from 'express';
 export type GetPostDetailHandler = RequestHandler<
   { PostId: string },
   string | unknown,
-  null,
   null
 >;
 
 export type GetPhotoDetailHandler = RequestHandler<
   { PhotoId: string },
   string | unknown,
-  null,
   null
 >;
 
 export type CreateCommentHandler = RequestHandler<
-  null,
+  unknown,
   string | unknown,
   {
     UserId: number;
@@ -23,19 +21,14 @@ export type CreateCommentHandler = RequestHandler<
     content: string;
     mentionedUser: number | null;
   },
-  null
+  Record<string, any>
 >;
 
 export type UpdateCommentHandler = RequestHandler<
-  null,
+  unknown,
   string | unknown,
   { CommentId: number; content: string; mentionedUser: number | null },
-  null
+  Record<string, any>
 >;
 
-export type RemoveCommentHandler = RequestHandler<
-  { CommentId: number },
-  string | unknown,
-  null,
-  null
->;
+export type RemoveCommentHandler = RequestHandler;

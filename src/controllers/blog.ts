@@ -9,6 +9,7 @@ import {
   GetBloggerPicPostListHandler,
 } from '../types/blog';
 
+//NOTE: 블로그주인 정보 조회
 export const getBloggerInfoController: GetBloggerInfoHandler = async (
   req,
   res,
@@ -46,6 +47,7 @@ export const getBloggerInfoController: GetBloggerInfoHandler = async (
   }
 };
 
+//NOTE: 블로그 포스트 조회
 export const getBloggerPostListController: GetBloggerPostListHandler = async (
   req,
   res,
@@ -92,6 +94,7 @@ export const getBloggerPostListController: GetBloggerPostListHandler = async (
   }
 };
 
+//NOTE: 블로그 픽스토리 조회
 export const getBloggerPicstoryListController: GetBloggerPicstoryListHandler = async (
   req,
   res,
@@ -139,6 +142,7 @@ export const getBloggerPicstoryListController: GetBloggerPicstoryListHandler = a
   }
 };
 
+//NOTE: 블로그 픽스토리 상세정보 조회
 export const getBloggerPicPostListController: GetBloggerPicPostListHandler = async (
   req,
   res,

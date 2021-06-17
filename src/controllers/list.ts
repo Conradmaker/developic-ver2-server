@@ -470,6 +470,8 @@ export const getSearchedListController: GetSearchedListHandler = async (
           ],
           group: ['PostId'],
           order: [[Sequelize.literal('score'), 'DESC']],
+          limit,
+          offset,
         });
 
         resultList = [];
@@ -575,7 +577,7 @@ export const getSearchedListController: GetSearchedListHandler = async (
               ],
             },
           ],
-          group: ['UserId'],
+          group: ['Post.UserId'],
           order: [[Sequelize.literal('score'), 'DESC']],
         });
 

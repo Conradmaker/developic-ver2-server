@@ -1,6 +1,5 @@
 import { RequestHandler } from 'express';
 
-// 파라미터 , 응답바디 , 요청바디, 쿼리
 export type GetBloggerInfoHandler = RequestHandler<
   { UserId: string },
   unknown | string,

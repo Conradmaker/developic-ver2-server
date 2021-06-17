@@ -8,6 +8,7 @@ import {
   RemovePostPicstoryHandler,
 } from '../types/picsotory';
 
+//NOTE: 새 픽스토리 생성
 export const createPicstoryController: CreatePicstoryHandler = async (
   req,
   res,
@@ -31,6 +32,7 @@ export const createPicstoryController: CreatePicstoryHandler = async (
   }
 };
 
+//NOTE: 픽스토리에 게시글 추가
 export const addPostPicstoryController: AddPostPicstoryHandler = async (
   req,
   res,
@@ -50,6 +52,8 @@ export const addPostPicstoryController: AddPostPicstoryHandler = async (
     next(e);
   }
 };
+
+//NOTE: 픽스토리에서 게시글 삭제
 export const removePostPicstoryController: RemovePostPicstoryHandler = async (
   req,
   res,
@@ -69,6 +73,8 @@ export const removePostPicstoryController: RemovePostPicstoryHandler = async (
     next(e);
   }
 };
+
+//NOTE: 픽스토리 삭제
 export const destroyPicstoryController: DestroyPicstoryHandler = async (
   req,
   res,
@@ -86,6 +92,7 @@ export const destroyPicstoryController: DestroyPicstoryHandler = async (
   }
 };
 
+//NOTE: 픽스토리 목록 조회
 export const getUserPicstoryListController: GetUserPicstoryListHandler = async (
   req,
   res,

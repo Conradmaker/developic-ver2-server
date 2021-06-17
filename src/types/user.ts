@@ -1,13 +1,12 @@
 import { RequestHandler } from 'express';
-// 파라미터 , 응답바디 , 요청바디, 쿼리
+
 export type GetUserDetailHandler = RequestHandler<
   { UserId: string },
   unknown | string,
-  null,
-  null
+  Record<string, any>
 >;
 export type UpdateUserIntroHandler = RequestHandler<
-  null,
+  unknown,
   unknown | string,
   {
     UserId: number;
@@ -16,10 +15,10 @@ export type UpdateUserIntroHandler = RequestHandler<
     website: string;
     summary: string;
   },
-  null
+  Record<string, any>
 >;
 export type UpdateUserInfoHandler = RequestHandler<
-  null,
+  unknown,
   unknown | string,
   {
     UserId: number;
@@ -28,35 +27,33 @@ export type UpdateUserInfoHandler = RequestHandler<
     nickname: string;
     avatar: string;
   },
-  null
+  Record<string, any>
 >;
 export type UpdatePasswordHandler = RequestHandler<
-  null,
+  unknown,
   unknown | string,
   { UserId: number; currentPassword: string; newPassword: string },
-  null
+  Record<string, any>
 >;
 export type DestroyUserHandler = RequestHandler<
   { UserId: string },
   unknown | string,
-  null,
-  null
+  Record<string, any>
 >;
 export type ToggleSubscribeHandler = RequestHandler<
-  null,
+  unknown,
   unknown | string,
   { subscriberId: number; writerId: number },
-  null
+  Record<string, any>
 >;
 export type getSubscribeListHandler = RequestHandler<
   { UserId: string },
   unknown | string,
-  null,
   { type: 'writer' | 'subscriber' | null }
 >;
 export type ToggleLikePostHandler = RequestHandler<
-  null,
+  unknown,
   unknown | string,
   { UserId: number; PostId: number },
-  null
+  Record<string, any>
 >;

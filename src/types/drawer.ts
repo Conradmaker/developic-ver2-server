@@ -1,6 +1,5 @@
 import { RequestHandler } from 'express';
 
-// 파라미터 , 응답바디 , 요청바디, 쿼리
 export type GetLikesListHandler = RequestHandler<
   { UserId: string },
   unknown | string,
@@ -23,7 +22,7 @@ export type RemoveTempPostHandler = RequestHandler<
   { PostId: string },
   unknown | string,
   null,
-  null
+  Record<string, any>
 >;
 export type GetRecentViewsHandler = RequestHandler<
   { UserId: string },
@@ -35,7 +34,7 @@ export type RemoveRecentViewHandler = RequestHandler<
   { RecentId: string },
   { recentId: number } | string,
   null,
-  null
+  Record<string, any>
 >;
 export type GetPhotoBinderListHandler = RequestHandler<
   { UserId: string },
@@ -47,35 +46,35 @@ export type GetPhotoBinderDetailHandler = RequestHandler<
   { BinderId: string },
   unknown | string,
   null,
-  null
+  Record<string, any>
 >;
 export type CreatePhotoBinderHandler = RequestHandler<
-  null,
+  unknown,
   unknown | string,
   { title: string; description: string; UserId: number },
-  null
+  Record<string, any>
 >;
 export type RemovePhotoBinderHandler = RequestHandler<
   { BinderId: string },
   unknown | string,
   null,
-  null
+  Record<string, any>
 >;
 export type UpdatePhotoBinderDetailHandler = RequestHandler<
   { BinderId: string },
   unknown | string,
   { title: string; description: string; BinderId: number },
-  null
+  Record<string, any>
 >;
 export type RemoveBinderPhotoHandler = RequestHandler<
   { BinderId: string },
   unknown | string,
   { photoIdArr: number[]; BinderId: number },
-  null
+  Record<string, any>
 >;
 export type AddBinderPhotoHandler = RequestHandler<
   { BinderId: string },
   unknown | string,
   { photoIdArr: number[]; BinderId: number },
-  null
+  Record<string, any>
 >;
