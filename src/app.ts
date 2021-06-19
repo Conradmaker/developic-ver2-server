@@ -33,7 +33,7 @@ if (prod) {
     cors({
       origin: [
         'http://localhost:3000',
-        'http://wongeun.xyz',
+        'https://wongeun.xyz',
         'https://developic.netlify.app',
       ],
       credentials: true,
@@ -54,9 +54,9 @@ app.use(
     secret: process.env.COOKIE_KEY as string,
     cookie: {
       httpOnly: true,
-      secure: false,
-      // sameSite: 'none',
-      domain: prod ? process.env.CLIENT_DOMAIN : undefined,
+      secure: true,
+      sameSite: 'none',
+      domain: undefined,
     },
     name: 'develuth',
   })
