@@ -33,7 +33,8 @@ if (prod) {
     cors({
       origin: [
         'http://localhost:3000',
-        'https://wongeun.xyz',
+        'https://www.developic.shop',
+        'https://developic.shop',
         'https://developic.netlify.app',
       ],
       credentials: true,
@@ -47,16 +48,19 @@ app.use('/image', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_KEY));
+app.set('trust proxy', 1);
 app.use(
   expressSession({
     resave: false,
     saveUninitialized: false,
     secret: process.env.COOKIE_KEY as string,
+    proxy: true,
     cookie: {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      domain: undefined,
+      path: '/',
+      domain: '.developic.shop',
     },
     name: 'develuth',
   })
