@@ -34,7 +34,7 @@ export const signUpController: RequestHandler = async (req, res, next) => {
       name: req.body.name,
       nickname: req.body.nickname,
       loginType: 'local',
-      avatar: `${process.env.SERVER_DOMAIN}/image/avatar/initial_avatar.png`,
+      avatar: 'https://i.ibb.co/V28FxS7/images.png',
       verificationCode: randomNumber,
     });
     if (!user) return res.status(400).send('회원가입중 오류 발생');

@@ -5,14 +5,12 @@ import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import hpp from 'hpp';
-import expressSession from 'express-session';
+import expressSession, { CookieOptions } from 'express-session';
 import path from 'path';
 import passport from 'passport';
 import { sequelize } from './db/models';
 import router from './routes';
 import passportConfig from './passport';
-
-console.log(process.env.NODE_ENV);
 
 dotenv.config();
 const prod = process.env.NODE_ENV === 'production';
@@ -24,7 +22,10 @@ sequelize
   .catch(e => console.error(e));
 
 const app = express();
+
 passportConfig();
+
+let CookieConf: CookieOptions;
 if (prod) {
   app.use(logger('combined'));
   app.use(helmet());
@@ -40,11 +41,27 @@ if (prod) {
       credentials: true,
     })
   );
+  CookieConf = {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    path: '/',
+    domain: '.developic.shop',
+  };
 } else {
   app.use(logger('dev'));
   app.use(cors({ origin: true, credentials: true }));
+  CookieConf = {
+    httpOnly: true,
+    secure: false,
+    path: '/',
+    domain: undefined,
+  };
 }
+
+app.use('/post/photo', express.static(path.join(__dirname, 'uploads/photos')));
 app.use('/image', express.static(path.join(__dirname, 'uploads')));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_KEY));
@@ -55,24 +72,18 @@ app.use(
     saveUninitialized: false,
     secret: process.env.COOKIE_KEY as string,
     proxy: true,
-    cookie: {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      path: '/',
-      domain: '.developic.shop',
-    },
+    cookie: CookieConf,
     name: 'develuth',
   })
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use('/post/photo', express.static(path.join(__dirname, 'uploads/photos')));
+
 app.use('/test', (req, res) => {
   console.log(process.env.NODE_ENV);
   res.send(process.env.NODE_ENV);
 });
+
 app.use('/api', router);
-app.use('/err', (req, res) => res.send('에러'));
 app.listen(PORT, () => console.log(`${PORT}포트에서 서버가 실행되었습니다.`));

@@ -37,7 +37,7 @@ userRouter.post('/subscribe/add', isLoggedIn, subscribeWriter);
 userRouter.post('/subscribe/remove', isLoggedIn, unSubscribeWriter);
 
 //NOTE: 구독작가 목록 조회
-userRouter.get('/subscribe/:UserId', isLoggedIn, getSubscribeList);
+userRouter.get('/subscribe/:UserId', getSubscribeList);
 
 //NOTE: 게시글 좋아요
 userRouter.post('/like/post', isLoggedIn, addLikePostController);
