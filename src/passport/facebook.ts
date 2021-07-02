@@ -8,7 +8,7 @@ export default (): void => {
       {
         clientID: process.env.FACEBOOK_API as string,
         clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
-        callbackURL: `${process.env.SERVER_DOMAIN}auth/facebook/callback`,
+        callbackURL: `${process.env.SERVER_DOMAIN}/auth/facebook/callback`,
         profileFields: ['id', 'displayName', 'photos', 'email'],
       },
       async (accessToken, refreshToken, profile, done) => {
