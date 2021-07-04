@@ -111,6 +111,7 @@ export const getBloggerPicstoryListController: GetBloggerPicstoryListHandler = a
         'thumbnail',
         'updatedAt',
         'createdAt',
+        'UserId',
       ],
       order: [['createdAt', 'DESC']],
       include: [
@@ -151,7 +152,7 @@ export const getBloggerPicPostListController: GetBloggerPicPostListHandler = asy
       where: { id: req.params.PicstoryId },
       limit,
       offset,
-      attributes: ['id', 'title', 'description', 'thumbnail'],
+      attributes: ['id', 'title', 'description', 'thumbnail', 'UserId'],
       include: [
         {
           model: Post,
@@ -188,6 +189,7 @@ export const getBloggerPicPostListController: GetBloggerPicPostListHandler = asy
       title: picPosts.title,
       description: picPosts.title,
       thumbnail: picPosts.thumbnail,
+      UserId: picPosts.UserId,
       Posts: computedPosts,
     });
   } catch (e) {

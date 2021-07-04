@@ -373,6 +373,7 @@ export const getSearchedListController: GetSearchedListHandler = async (
           'thumbnail',
           'updatedAt',
           'createdAt',
+          'UserId',
         ],
         include: [
           {

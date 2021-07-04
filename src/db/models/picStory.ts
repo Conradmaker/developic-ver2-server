@@ -16,6 +16,7 @@ class PicStory extends Model {
   public description!: string;
   public isPrivate!: boolean;
   public thumbnail?: string;
+  public UserId?: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;

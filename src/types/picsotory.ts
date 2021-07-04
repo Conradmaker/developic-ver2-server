@@ -15,6 +15,13 @@ export type AddPostPicstoryHandler = RequestHandler<
   null
 >;
 
+export type UpdatePicstoryHandler = RequestHandler<
+  { PicstoryId: string },
+  unknown | string,
+  { title: string; description: string; PicstoryId: number },
+  Record<string, any>
+>;
+
 export type RemovePostPicstoryHandler = RequestHandler<
   null,
   { id: string } | string,

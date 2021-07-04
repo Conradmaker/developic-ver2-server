@@ -6,6 +6,7 @@ import {
   DestroyPicstoryHandler,
   GetUserPicstoryListHandler,
   RemovePostPicstoryHandler,
+  UpdatePicstoryHandler,
 } from '../types/picsotory';
 
 export const createPicstoryController: CreatePicstoryHandler = async (
@@ -25,6 +26,28 @@ export const createPicstoryController: CreatePicstoryHandler = async (
     return res
       .status(201)
       .json({ id: newPicstory.id, title: newPicstory.title });
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+//픽스토리 정보 수정
+export const updatePicstoryController: UpdatePicstoryHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const picstory = await PicStory.findOne({
+      where: { id: req.body.PicstoryId },
+    });
+    if (!picstory) return res.status(404).send('픽스토리를 찾을 수 없습니다.');
+    await picstory.update({
+      title: req.body.title,
+      description: req.body.description,
+    });
+    return res.status(201).json(req.body);
   } catch (e) {
     console.error(e);
     next(e);
