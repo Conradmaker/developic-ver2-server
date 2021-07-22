@@ -46,6 +46,7 @@ export const updatePicstoryController: UpdatePicstoryHandler = async (
     await picstory.update({
       title: req.body.title,
       description: req.body.description,
+      thumbnail: req.body.thumbnail,
     });
     return res.status(201).json(req.body);
   } catch (e) {
