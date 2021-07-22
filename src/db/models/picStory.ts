@@ -8,6 +8,7 @@ import {
 import { DbType } from '.';
 import Post from './post';
 import sequelize from './sequelize';
+import User from './user';
 
 class PicStory extends Model {
   public readonly id!: string;
@@ -26,6 +27,7 @@ class PicStory extends Model {
   public getPosts!: BelongsToManyGetAssociationsMixin<Post>;
 
   public Posts?: Post[];
+  public User?: User;
 }
 
 PicStory.init(
