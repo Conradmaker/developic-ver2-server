@@ -5,6 +5,7 @@ import {
   destroyPicstoryController,
   getUserPicstoryListController,
   removePostPicstoryController,
+  updatePicstoryController,
 } from '../controllers/picstory';
 import { isLoggedIn } from '../middlewares/isLoggedIn';
 
@@ -20,5 +21,6 @@ picstoryRouter.patch('/post', isLoggedIn, removePostPicstoryController);
 picstoryRouter.delete('/:PicstoryId', isLoggedIn, destroyPicstoryController);
 //NOTE: 픽스토리 목록 조회
 picstoryRouter.get('/:UserId', getUserPicstoryListController);
+picstoryRouter.patch('/detail', updatePicstoryController);
 
 export default picstoryRouter;

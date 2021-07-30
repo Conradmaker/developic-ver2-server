@@ -33,6 +33,7 @@ export const getWriterList: GetWriterListHandler = async (req, res, next) => {
               from POST P
                        join SUBSCRIBE S on S.WriterId = P.UserId
               where P.state = 1
+                       and P.isPublic = 1
                        and S.SubscriberId = :loginUserId
               order by P.createdAt DESC
               LIMIT 18446744073709551615) P2
@@ -46,6 +47,7 @@ from (select *
       from (select P.createdAt, P.UserId
             from POST P
             where P.state = 1
+                  and P.isPublic = 1
             order by P.createdAt DESC
             LIMIT 18446744073709551615) P2
       group by UserId) P3
@@ -77,6 +79,7 @@ export const getFeedList: GetFeedListHandler = async (req, res, next) => {
           ),
         },
         state: 1,
+        isPublic: 1,
       },
       limit,
       offset,
@@ -119,7 +122,7 @@ export const getPostList: GetPostListHandler = async (req, res, next) => {
       list = await Post.findAll({
         limit,
         offset,
-        where: { state: 1 },
+        where: { state: 1, isPublic: 1 },
         attributes: [
           'id',
           'title',
@@ -166,7 +169,7 @@ export const getPostList: GetPostListHandler = async (req, res, next) => {
               'UserId',
               'hits',
             ],
-            where: { state: 1 },
+            where: { state: 1, isPublic: 1 },
             include: [
               {
                 model: User,
@@ -276,7 +279,7 @@ export const getHashTaggedPostController: GetHashTaggedPostHandler = async (
     }
 
     const resultList = await tag.getPosts({
-      where: { state: 1 },
+      where: { state: 1, isPublic: 1 },
       limit,
       offset,
       order: [[sort, 'DESC']],
@@ -373,11 +376,13 @@ export const getSearchedListController: GetSearchedListHandler = async (
           'thumbnail',
           'updatedAt',
           'createdAt',
+          'UserId',
         ],
         include: [
+          { model: User, attributes: ['id', 'nickname', 'avatar'] },
           {
             model: Post,
-            where: { state: 1 },
+            where: { state: 1, isPublic: 1 },
             attributes: [
               'id',
               'title',
@@ -387,6 +392,7 @@ export const getSearchedListController: GetSearchedListHandler = async (
               'UserId',
               'updatedAt',
               'createdAt',
+              'isPublic',
             ],
             through: { attributes: [] },
             include: [
@@ -411,7 +417,7 @@ export const getSearchedListController: GetSearchedListHandler = async (
         resultList = await Post.findAll({
           where: {
             [Op.and]: [
-              { state: 1 },
+              { state: 1, isPublic: 1 },
               {
                 [Op.or]: [
                   { title: { [Op.like]: `%${keyword}%` } },
@@ -457,7 +463,7 @@ export const getSearchedListController: GetSearchedListHandler = async (
               attributes: ['id'],
               where: {
                 [Op.and]: [
-                  { state: 1 },
+                  { state: 1, isPublic: 1 },
                   {
                     [Op.or]: [
                       { title: { [Op.like]: `%${keyword}%` } },
@@ -539,7 +545,7 @@ export const getSearchedListController: GetSearchedListHandler = async (
             {
               model: Post,
               attributes: ['id', 'thumbnail'],
-              where: { state: 1 },
+              where: { state: 1, isPublic: 1 },
             },
           ],
           order: [['createdAt', 'DESC']],
@@ -613,7 +619,7 @@ export const getSearchedListController: GetSearchedListHandler = async (
                   {
                     model: Post,
                     attributes: ['id', 'thumbnail'],
-                    where: { state: 1 },
+                    where: { state: 1, isPublic: 1 },
                   },
                 ],
               })

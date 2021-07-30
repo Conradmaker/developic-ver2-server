@@ -69,6 +69,7 @@ export const getBloggerPostListController: GetBloggerPostListHandler = async (
         'updatedAt',
         'createdAt',
         'UserId',
+        'isPublic',
       ],
       order: [['createdAt', 'DESC']],
       include: [{ model: User, as: 'likers', attributes: ['id'] }],
@@ -85,6 +86,7 @@ export const getBloggerPostListController: GetBloggerPostListHandler = async (
         updatedAt: list[i].updatedAt,
         createdAt: list[i].createdAt,
         UserId: list[i].UserId,
+        isPublic: list[i].isPublic,
       } as Post;
     }
     res.status(200).json(list);
@@ -114,9 +116,11 @@ export const getBloggerPicstoryListController: GetBloggerPicstoryListHandler = a
         'thumbnail',
         'updatedAt',
         'createdAt',
+        'UserId',
       ],
       order: [['createdAt', 'DESC']],
       include: [
+        { model: User, attributes: ['id', 'nickname'] },
         {
           model: Post,
           where: { state: 1 },
@@ -129,6 +133,7 @@ export const getBloggerPicstoryListController: GetBloggerPicstoryListHandler = a
             'UserId',
             'updatedAt',
             'createdAt',
+            'isPublic',
           ],
           include: [{ model: User, as: 'likers', attributes: ['id'] }],
         },
@@ -155,8 +160,9 @@ export const getBloggerPicPostListController: GetBloggerPicPostListHandler = asy
       where: { id: req.params.PicstoryId },
       limit,
       offset,
-      attributes: ['id', 'title', 'description', 'thumbnail'],
+      attributes: ['id', 'title', 'description', 'thumbnail', 'UserId'],
       include: [
+        { model: User, attributes: ['id', 'nickname'] },
         {
           model: Post,
           where: { state: 1 },
@@ -169,6 +175,7 @@ export const getBloggerPicPostListController: GetBloggerPicPostListHandler = asy
             'UserId',
             'updatedAt',
             'createdAt',
+            'isPublic',
           ],
           order: [['createdAt', 'DESC']],
           include: [{ model: User, as: 'likers', attributes: ['id'] }],
@@ -176,6 +183,10 @@ export const getBloggerPicPostListController: GetBloggerPicPostListHandler = asy
       ],
     });
     if (!picPosts) return res.status(404).send('픽스토리를 찾을 수 없습니다.');
+    const picUser = {
+      id: (picPosts.User as User).id,
+      nickname: (picPosts.User as User).nickname,
+    };
     const computedPosts = (picPosts.Posts as Post[]).map(post => ({
       id: post.id,
       title: post.title,
@@ -186,12 +197,15 @@ export const getBloggerPicPostListController: GetBloggerPicPostListHandler = asy
       UserId: post.UserId,
       updatedAt: post.updatedAt,
       createdAt: post.createdAt,
+      isPublic: post.isPublic,
     }));
     return res.status(200).json({
       id: picPosts.id,
       title: picPosts.title,
-      description: picPosts.title,
+      description: picPosts.description,
       thumbnail: picPosts.thumbnail,
+      UserId: picPosts.UserId,
+      User: picUser,
       Posts: computedPosts,
     });
   } catch (e) {
