@@ -1,7 +1,7 @@
 import Admin from '../db/models/admin';
 import FaQ from '../db/models/faq';
 import Notice from '../db/models/notice';
-import { transporter } from '../routes/auth';
+import { transporter } from '../middlewares/nodeMailer';
 import {
   GetFaqListHandler,
   GetNoticeListHandler,
@@ -9,6 +9,7 @@ import {
 } from '../types/cs';
 import { makeInqueryMail } from '../utils/makeMail';
 
+//NOTE: 이메일 문의 보내기
 export const emailInqueryController: PostEmailInqueryHandler = async (
   req,
   res,
@@ -29,6 +30,7 @@ export const emailInqueryController: PostEmailInqueryHandler = async (
   }
 };
 
+//NOTE: Faq목록 조회
 export const getFaqListController: GetFaqListHandler = async (
   req,
   res,
@@ -51,6 +53,7 @@ export const getFaqListController: GetFaqListHandler = async (
   }
 };
 
+//NOTE: 공지사항 조회
 export const getNoticeListController: GetNoticeListHandler = async (
   req,
   res,

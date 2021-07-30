@@ -6,7 +6,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon",
-    "se": "sequelize init"
+    "build": "cross-env NODE_OPTIONS=--max_old_space_size=800 tsc",
+    "start":"pm2 start ecosystem.config.js --env production",
+    "win-start": "cross-env NODE_ENV=production sudo pm2 start build/app.js"
   },
   "dependencies": {
     "@types/express-session": "^1.17.3",
@@ -14,11 +16,14 @@
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "crypto-random-string": "3.3.0",
     "dotenv-flow": "^3.2.0",
     "esm": "^3.2.25",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "helmet": "^4.6.0",
+    "hpp": "^0.2.3",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
@@ -40,6 +45,7 @@
     "@types/crypto-random-string": "^2.0.0",
     "@types/dotenv-flow": "^3.1.0",
     "@types/express": "^4.17.11",
+    "@types/hpp": "^0.2.1",
     "@types/morgan": "^1.9.2",
     "@types/multer": "^1.4.5",
     "@types/multer-s3": "^2.7.9",
@@ -50,6 +56,7 @@
     "@types/passport-google-oauth": "^1.0.41",
     "@types/passport-kakao": "^0.2.0",
     "@types/passport-local": "^1.0.33",
+    "@types/validator": "^13.1.4",
     "@typescript-eslint/eslint-plugin": "^4.20.0",
     "@typescript-eslint/parser": "^4.20.0",
     "eslint": "^7.23.0",

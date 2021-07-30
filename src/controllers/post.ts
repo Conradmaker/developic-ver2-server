@@ -19,6 +19,7 @@ import {
   UpdateCommentHandler,
 } from '../types/post';
 
+//NOTE: 해시태그 생성
 export const addHashTagController: RequestHandler = async (req, res, next) => {
   try {
     const existTag = await HashTag.findOne({ where: { name: req.body.name } });
@@ -35,6 +36,7 @@ export const addHashTagController: RequestHandler = async (req, res, next) => {
   }
 };
 
+//NOTE: 해시태그 목록 검색
 export const searchHashTagsController: RequestHandler = async (
   req,
   res,
@@ -59,6 +61,7 @@ export const searchHashTagsController: RequestHandler = async (
   }
 };
 
+//NOTE: 임시저장
 export const preSaveController: RequestHandler = async (req, res, next) => {
   try {
     const postId = req.body.PostId ? parseInt(req.body.PostId, 10) : null;
@@ -128,6 +131,7 @@ export const preSaveController: RequestHandler = async (req, res, next) => {
   }
 };
 
+//NOTE: 게시글 등록
 export const submitPostController: RequestHandler = async (req, res, next) => {
   try {
     const post = await Post.findOne({ where: { id: req.body.PostId } });
@@ -147,7 +151,7 @@ export const submitPostController: RequestHandler = async (req, res, next) => {
   }
 };
 
-//포스트 삭제
+//NOTE: 게시글 삭제
 export const removePostController: RequestHandler = async (req, res, next) => {
   try {
     const post = await Post.findOne({
@@ -165,6 +169,7 @@ export const removePostController: RequestHandler = async (req, res, next) => {
   }
 };
 
+//NOTE: 임시저장된 게시글 불러오기
 export const getTempPost: RequestHandler = async (req, res, next) => {
   try {
     const post = await Post.findOne({
@@ -191,7 +196,7 @@ export const getTempPost: RequestHandler = async (req, res, next) => {
   }
 };
 
-//포스트 디테일 조회
+//NOTE: 게시글 상세정보 불러오기
 export const getPostDetail: GetPostDetailHandler = async (req, res, next) => {
   try {
     const post = await Post.findOne({
@@ -259,7 +264,7 @@ export const getPostDetail: GetPostDetailHandler = async (req, res, next) => {
   }
 };
 
-//사진 디테일 조회
+//NOTE: 사진 상세정보 불어오기
 export const getPhotoDetail: GetPhotoDetailHandler = async (req, res, next) => {
   try {
     const post = await PostImage.findOne({
@@ -282,7 +287,7 @@ export const getPhotoDetail: GetPhotoDetailHandler = async (req, res, next) => {
   }
 };
 
-//댓글 작성
+//NOTE: 댓글 등록
 export const createCommentController: CreateCommentHandler = async (
   req,
   res,
@@ -303,7 +308,7 @@ export const createCommentController: CreateCommentHandler = async (
   }
 };
 
-//댓글 수정
+//NOTE: 댓글 수정
 export const updateCommentController: UpdateCommentHandler = async (
   req,
   res,
@@ -327,7 +332,7 @@ export const updateCommentController: UpdateCommentHandler = async (
   }
 };
 
-//댓글 삭제
+//NOTE: 댓글 삭제
 export const removeCommentController: RemoveCommentHandler = async (
   req,
   res,

@@ -1,18 +1,18 @@
 import { RequestHandler } from 'express';
 import PicStory from '../db/models/picStory';
-// 파라미터 , 응답바디 , 요청바디, 쿼리
+
 export type CreatePicstoryHandler = RequestHandler<
-  null,
+  unknown,
   { id: string; title: string } | string,
   { title: string; thumbnail: string; description: string; UserId: string },
-  null
+  Record<string, any>
 >;
 
 export type AddPostPicstoryHandler = RequestHandler<
-  null,
+  unknown,
   { id: string } | string,
   { PostId: string; PicstoryId: string },
-  null
+  Record<string, any>
 >;
 
 export type UpdatePicstoryHandler = RequestHandler<
@@ -23,17 +23,16 @@ export type UpdatePicstoryHandler = RequestHandler<
 >;
 
 export type RemovePostPicstoryHandler = RequestHandler<
-  null,
+  unknown,
   { id: string } | string,
   { PostId: string; PicstoryId: string },
-  null
+  Record<string, any>
 >;
 
 export type DestroyPicstoryHandler = RequestHandler<
   { PicstoryId: string },
   { id: number } | string,
-  null,
-  null
+  Record<string, any>
 >;
 
 export type GetUserPicstoryListHandler = RequestHandler<

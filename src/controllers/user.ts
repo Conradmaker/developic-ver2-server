@@ -13,6 +13,7 @@ import {
   ToggleLikePostHandler,
 } from '../types/user';
 
+//NOTE: 유저 상세정보 불러오기
 export const getUserDetailInfoController: GetUserDetailHandler = async (
   req,
   res,
@@ -39,6 +40,7 @@ export const getUserDetailInfoController: GetUserDetailHandler = async (
   }
 };
 
+//NOTE: 유저 계정정보 수정
 export const updateUserInfoController: UpdateUserInfoHandler = async (
   req,
   res,
@@ -61,6 +63,7 @@ export const updateUserInfoController: UpdateUserInfoHandler = async (
   }
 };
 
+//NOTE: 비밀번호 변경
 export const updatePasswordController: UpdatePasswordHandler = async (
   req,
   res,
@@ -85,6 +88,7 @@ export const updatePasswordController: UpdatePasswordHandler = async (
   }
 };
 
+//NOTE: 유저 소개 수정
 export const updateUserIntroController: UpdateUserIntroHandler = async (
   req,
   res,
@@ -109,6 +113,7 @@ export const updateUserIntroController: UpdateUserIntroHandler = async (
   }
 };
 
+//NOTE: 회원 탈퇴
 export const destroyUserController: DestroyUserHandler = async (
   req,
   res,
@@ -126,7 +131,7 @@ export const destroyUserController: DestroyUserHandler = async (
   }
 };
 
-//작가 구독하기
+//NOTE: 구독하기
 export const subscribeWriter: ToggleSubscribeHandler = async (
   req,
   res,
@@ -142,7 +147,8 @@ export const subscribeWriter: ToggleSubscribeHandler = async (
     next(e);
   }
 };
-//작가 구독취소
+
+//NOTE: 구독취소
 export const unSubscribeWriter: ToggleSubscribeHandler = async (
   req,
   res,
@@ -158,7 +164,8 @@ export const unSubscribeWriter: ToggleSubscribeHandler = async (
     next(e);
   }
 };
-//구독자 (작가) 목록 조회
+
+//NOTE: 구독작가 목록 조회
 export const getSubscribeList: getSubscribeListHandler = async (
   req,
   res,
@@ -183,7 +190,7 @@ export const getSubscribeList: getSubscribeListHandler = async (
   }
 };
 
-//좋아요 추가
+//NOTE: 게시글 좋아요
 export const addLikePostController: ToggleLikePostHandler = async (
   req,
   res,
@@ -207,7 +214,7 @@ export const addLikePostController: ToggleLikePostHandler = async (
   }
 };
 
-//좋아요 취소
+//NOTE: 게시글 좋아요 취소
 export const removeLikePostController: ToggleLikePostHandler = async (
   req,
   res,

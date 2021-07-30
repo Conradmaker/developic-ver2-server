@@ -1,104 +1,19 @@
 import express from 'express';
-import multer from 'multer';
-import path from 'path';
-import multerS3 from 'multer-s3';
-import AWS from 'aws-sdk';
 import PostImage from '../db/models/postImage';
 import MetaData from '../db/models/metaData';
 import ExhibitionImage from '../db/models/exhibitionImage';
 import Thumbnail from '../db/models/thumbnail';
-import cryptoRandomString from 'crypto-random-string';
+import {
+  upload,
+  uploadAvatar,
+  uploadExhibition,
+  uploadPoster,
+  uploadThumb,
+} from '../middlewares/uploads';
 
 const uploadRouter = express.Router();
 
-AWS.config.update({
-  accessKeyId: process.env.S3_ACCESS_KEY_ID,
-  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-  region: 'ap-northeast-2',
-});
-
-const upload = multer({
-  storage: multerS3({
-    s3: new AWS.S3(),
-    bucket: 'developic2',
-    key(req, file, cb) {
-      const ext = path.extname(file.originalname);
-      cb(
-        null,
-        `original/post/${Date.now()}_${cryptoRandomString({ length: 5 }) + ext}`
-      );
-    },
-  }),
-  limits: { fileSize: 20 * 1024 * 1024 },
-});
-
-const uploadThumb = multer({
-  storage: multerS3({
-    s3: new AWS.S3(),
-    bucket: 'developic2',
-    key(req, file, cb) {
-      const ext = path.extname(file.originalname);
-      cb(
-        null,
-        `original/thumbnail/${Date.now()}_${
-          cryptoRandomString({ length: 5 }) + ext
-        }`
-      );
-    },
-  }),
-  limits: { fileSize: 20 * 1024 * 1024 },
-});
-const uploadPoster = multer({
-  storage: multerS3({
-    s3: new AWS.S3(),
-    bucket: 'developic2',
-    key(req, file, cb) {
-      const ext = path.extname(file.originalname);
-      cb(
-        null,
-        `original/poster/${Date.now()}_${
-          cryptoRandomString({ length: 5 }) + ext
-        }`
-      );
-    },
-  }),
-  limits: { fileSize: 20 * 1024 * 1024 },
-});
-
-const uploadExhibition = multer({
-  storage: multerS3({
-    s3: new AWS.S3(),
-    bucket: 'developic2',
-    key(req, file, cb) {
-      const ext = path.extname(file.originalname);
-      cb(
-        null,
-        `original/exhibition/${Date.now()}_${
-          cryptoRandomString({ length: 5 }) + ext
-        }`
-      );
-    },
-  }),
-  limits: { fileSize: 20 * 1024 * 1024 },
-});
-
-const uploadAvatar = multer({
-  storage: multerS3({
-    s3: new AWS.S3(),
-    bucket: 'developic2',
-    key(req, file, cb) {
-      const ext = path.extname(file.originalname);
-      cb(
-        null,
-        `original/avatar/${Date.now()}_${
-          cryptoRandomString({ length: 5 }) + ext
-        }`
-      );
-    },
-  }),
-  limits: { fileSize: 10 * 1024 * 1024 },
-});
-
+//NOTE: 포스트 사진 업로드
 uploadRouter.post(
   '/postimage/:userId',
   upload.single('image'),
@@ -126,6 +41,8 @@ uploadRouter.post(
     }
   }
 );
+
+//NOTE: 이미지 메타데이터 업로드
 uploadRouter.post('/exif', async (req, res, next) => {
   try {
     const metaData = await MetaData.create(req.body);
@@ -136,6 +53,7 @@ uploadRouter.post('/exif', async (req, res, next) => {
   }
 });
 
+//NOTE: 썸내일 업로드
 uploadRouter.post(
   '/thumbnail',
   uploadThumb.single('image'),
@@ -156,6 +74,7 @@ uploadRouter.post(
   }
 );
 
+//NOTE: 전시회 사진 업로드
 uploadRouter.post(
   '/exhibitionimage/:userId',
   uploadExhibition.single('image'),
@@ -183,6 +102,7 @@ uploadRouter.post(
   }
 );
 
+//NOTE: 전시회 포스터 업로드
 uploadRouter.post(
   '/poster',
   uploadPoster.single('image'),
@@ -203,6 +123,7 @@ uploadRouter.post(
   }
 );
 
+//NOTE: 유저 아바타 업로드
 uploadRouter.post(
   '/avatar',
   uploadAvatar.single('image'),

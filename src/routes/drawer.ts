@@ -1,36 +1,51 @@
 import express from 'express';
 import {
-  getLikesListController,
-  getTempListController,
-  removeLikesItemController,
-  removeTempPostController,
-  getRecentViewsController,
-  removeRecentViewController,
-  getPhotoBinderListController,
-  getPhotoBinderDetailController,
-  updatePhotoBinderDetailController,
-  removeBinderPhotoController,
-  removePhotoBinderController,
-  addBinderPhotoController,
-  createPhotoBinderController,
+  getLikesListCtr,
+  getTempListCtr,
+  removeLikesItemCtr,
+  removeTempPostCtr,
+  getRecentViewsCtr,
+  removeRecentViewCtr,
+  getBinderListCtr,
+  getBinderDetailCtr,
+  updateBinderDetailCtr,
+  removeBinderPhotoCtr,
+  removeBinderCtr,
+  addBinderPhotoCtr,
+  createBinderCtr,
 } from '../controllers/drawer';
+import { isLoggedIn } from '../middlewares/isLoggedIn';
 
 const drawerRouter = express.Router();
 
-drawerRouter.get('/likes/:UserId', getLikesListController);
-drawerRouter.delete('/likes/:UserId', removeLikesItemController);
-drawerRouter.get('/saves/:UserId', getTempListController);
-drawerRouter.delete('/saves/:PostId', removeTempPostController);
-drawerRouter.get('/recents/:UserId', getRecentViewsController);
-drawerRouter.delete('/recents/:RecentId', removeRecentViewController);
+//NOTE: 좋아요 게시글 목록 조회
+drawerRouter.get('/likes/:UserId', isLoggedIn, getLikesListCtr);
+//NOTE: 좋아요 항목 삭제
+drawerRouter.delete('/likes/:UserId', isLoggedIn, removeLikesItemCtr);
 
-drawerRouter.get('/binder/:UserId', getPhotoBinderListController);
-drawerRouter.post('/binder', createPhotoBinderController);
-drawerRouter.delete('/binder/:BinderId', removePhotoBinderController);
-drawerRouter.patch('/binder/detail', updatePhotoBinderDetailController);
-drawerRouter.get('/binder/detail/:BinderId', getPhotoBinderDetailController);
+//NOTE: 임시저장 게시글 목록 조회
+drawerRouter.get('/saves/:UserId', isLoggedIn, getTempListCtr);
+//NOTE: 임시저장 게시글 삭제
+drawerRouter.delete('/saves/:PostId', isLoggedIn, removeTempPostCtr);
 
-drawerRouter.post('/binder/photo', addBinderPhotoController);
-drawerRouter.patch('/binder/photo', removeBinderPhotoController);
+//NOTE: 최근 본 글 목록 조회
+drawerRouter.get('/recents/:UserId', isLoggedIn, getRecentViewsCtr);
+//NOTE: 최근 본 글 삭제
+drawerRouter.delete('/recents/:RecentId', isLoggedIn, removeRecentViewCtr);
+
+//NOTE: 포토바인더 목록 조회
+drawerRouter.get('/binder/:UserId', isLoggedIn, getBinderListCtr);
+//NOTE: 포토바인더 생성
+drawerRouter.post('/binder', isLoggedIn, createBinderCtr);
+//NOTE: 포토바인더 삭제
+drawerRouter.delete('/binder/:BinderId', isLoggedIn, removeBinderCtr);
+//NOTE: 포토바인더 수정
+drawerRouter.patch('/binder/detail', isLoggedIn, updateBinderDetailCtr);
+//NOTE: 포토바인더 안의 사진정보 및 디테일 불러오기
+drawerRouter.get('/binder/detail/:BinderId', isLoggedIn, getBinderDetailCtr);
+//NOTE: 포토바인더에 사진 추가
+drawerRouter.post('/binder/photo', isLoggedIn, addBinderPhotoCtr);
+//NOTE: 포토바인더에서 사진 삭제
+drawerRouter.patch('/binder/photo', isLoggedIn, removeBinderPhotoCtr);
 
 export default drawerRouter;
